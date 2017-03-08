@@ -25,6 +25,11 @@ public class City implements Symbol
 	
 	public double distanceTo(City city)
 	{
+		// This might save us a cycle or two on a heavily 
+		// trafficed bit of code.
+		if (_distanceCache.containsKey(city))
+			return _distanceCache.get(city);
+		
 		// Some ol' school a^2 + b^2 == c^2. 
 		int xDistance = Math.abs(_x - city._x);
 		int yDistance = Math.abs(_y - city._y);
