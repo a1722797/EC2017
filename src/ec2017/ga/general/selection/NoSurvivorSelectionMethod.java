@@ -12,7 +12,9 @@ import ec2017.ga.general.SurvivorSelectionMethod;
  */
 public class NoSurvivorSelectionMethod implements SurvivorSelectionMethod
 {
-
+	/**
+	 * Stub implementation. Returns a shallow copy of the oldGeneration.
+	 */
 	@Override
 	public ArrayList<Individual> select(
 			ArrayList<Individual> oldGeneration, ArrayList<Individual> newGeneration,

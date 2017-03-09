@@ -10,6 +10,11 @@ import ec2017.ga.general.selection.NoParentSelectionMethod;
 import ec2017.ga.general.selection.NoSurvivorSelectionMethod;
 import ec2017.ga.general.variation.MutateNop;
 
+/**
+ * The main entry point for our program.
+ * @author pat
+ *
+ */
 public class TSPProblem
 {
 	public static void main(String[] args) 

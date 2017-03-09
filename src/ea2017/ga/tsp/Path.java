@@ -25,12 +25,22 @@ public class Path implements Individual
 	{
 	}
 	
+	/**
+	 * Create a path from an ordered list of cities.	
+	 * @param cities
+	 */
 	public Path(ArrayList<City> cities)
 	{
 		_cities = cities;
 		initialize();
 	}
 	
+	/**
+	 * This method initializes the path, assuming a given loop of cities, we calculate 
+	 * the best possible distance for the given city list by considering the ordered
+	 * list a loop, then setting the start point for the path such that the longest
+	 * individual trip between cities is eliminated.
+	 */
 	private void initialize()
 	{
 		// This is to make sure that the array has more than 1 city. Otherwise we're being silly.
@@ -80,6 +90,10 @@ public class Path implements Individual
 		return -_distance;
 	}
 	
+	/**
+	 * The genotype for the path is the list of cities.
+	 * This method will return a shallow copy of the underlying array.
+	 */
 	@SuppressWarnings("unchecked")
 	@Override 
 	public ArrayList<Symbol> getGenotype()
@@ -115,6 +129,10 @@ public class Path implements Individual
 		return 0;
 	}
 
+	/**
+	 * Produces a new Path object by mutating our genotype using the given
+	 * MutateOperator.
+	 */
 	@Override
 	public Individual mutate(MutateOperator mutateOp)
 	{
@@ -122,6 +140,10 @@ public class Path implements Individual
 		return create(genotype);
 	}
 
+	/**
+	 * Produces a child Path using the CrossOverOperator and other parent individual.
+	 * This method will use this instance as parentA, with the given instance as parentB.
+	 */
 	@Override
 	public Individual crossOver(Individual otherParent, CrossOverOperator crossOp) 
 	{
@@ -129,6 +151,10 @@ public class Path implements Individual
 		return create(genotype);
 	}
 	
+	/**
+	 * Creates a new path based on a genotype of symbols. The symbols must be 
+	 * assignable to city or a runtime error will be thrown.
+	 */
 	@Override
 	public Individual create(ArrayList<Symbol> genotype)
 	{

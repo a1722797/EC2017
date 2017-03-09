@@ -3,6 +3,11 @@ package ec2017.ga.general;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * The Population class represents an evolving population of individuals.
+ * @author pat
+ *
+ */
 public class Population 
 {
 	protected ArrayList<Symbol> _symbols;
@@ -39,6 +44,11 @@ public class Population
 		generatePopulation(populationSeed);
 	}
 	
+	/**
+	 * Generates a new, randomised population.
+	 * @param mother The seed individual, which will provide the sub-type. 
+	 * 				 The mother will not be present in the population. 
+	 */
 	private void generatePopulation(Individual mother)
 	{
 		for (int i = 0; i < _populationSize; i++)

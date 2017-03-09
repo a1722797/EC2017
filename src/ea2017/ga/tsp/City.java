@@ -4,6 +4,11 @@ import java.util.HashMap;
 
 import ec2017.ga.general.Symbol;
 
+/**
+ * This class represents a single city in the traveling salesman problem.
+ * @author pat
+ *
+ */
 public class City implements Symbol
 {
 	private String _id;
@@ -11,6 +16,12 @@ public class City implements Symbol
 	private int _y;
 	private HashMap<City, Double> _distanceCache = new HashMap<>();
 	
+	/**
+	 * Create a new city
+	 * @param id The city's unique ID
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 */
 	public City(String id, int x, int y)
 	{
 		_id = id;
@@ -18,11 +29,20 @@ public class City implements Symbol
 		_y = y;
 	}
 	
+	/**
+	 * 
+	 * @return The city's identifier.
+	 */
 	public String getId()
 	{
 		return _id;
 	}
 	
+	/**
+	 * This method calculates the distance traveling from this city to the given city. 
+	 * @param city The given city.
+	 * @return The distance to the given city.
+	 */
 	public double distanceTo(City city)
 	{
 		// This might save us a cycle or two on a heavily 
@@ -40,6 +60,10 @@ public class City implements Symbol
 		return distance;
 	}
 	
+	/**
+	 * The cache holds a set of previously calculated distance values.
+	 * @return
+	 */
 	protected HashMap<City, Double> cache()
 	{
 		return cache();

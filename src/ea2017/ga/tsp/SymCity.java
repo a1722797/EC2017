@@ -7,11 +7,22 @@ package ea2017.ga.tsp;
  */
 public class SymCity extends City
 {
+	/**
+	 * Create a new symetrical city
+	 * @param id The city's unique ID
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 */
 	public SymCity(String id, int x, int y)
 	{
 		super(id, x, y);
 	}
 	
+	/**
+	 * Will return the distance to a given city
+	 * @param city
+	 * @return
+	 */
 	public double distanceTo(SymCity city)
 	{
 		double distance = distanceTo(city);
