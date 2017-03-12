@@ -75,15 +75,17 @@ public class Population
 			newGeneration = new ArrayList<Individual>();
 			
 			//Shuffle the mating pool to make sure our mating is random.
-			Collections.shuffle(matingPool);
+			ArrayList<Individual> shuffledMatingPool = new ArrayList<Individual>(matingPool);
+			Collections.shuffle(shuffledMatingPool);
 			
-			// Get the last parent.
-			Individual previousParent = matingPool.get(matingPool.size()-1);
 			// Put on some Barry White and leave them to it...
 			for(int i = 0; i < matingPool.size(); i++)
 			{
-				Individual partent = matingPool.get(i);
-				Individual child = previousParent.crossOver(partent, _crossOverOp);
+				// Sometimes parentA may be parentB, but this maintains ordering, making the InterOverOp easier.
+				Individual parentA = matingPool.get(i);
+				Individual parentB = shuffledMatingPool.get(i);
+				
+				Individual child = parentA.crossOver(parentB, _crossOverOp);
 				newGeneration.add(child);
 			}
 		}
