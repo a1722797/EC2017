@@ -57,9 +57,10 @@ public class Path implements Individual
 			double singleDistance = previousCity.distanceTo(city);
 
 			// Uncomment this to start at 1
-//			if (city.getId().equals("1"))_startIndex = i;
+			if (city.getId().equals("1"))_startIndex = i;
 			
 			_distance += singleDistance;
+			previousCity = city;
 		}
 	}
 	

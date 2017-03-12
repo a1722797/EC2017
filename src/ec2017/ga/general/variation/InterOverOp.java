@@ -8,7 +8,7 @@ import ec2017.ga.general.Symbol;
 
 public class InterOverOp implements CrossOverOperator
 {
-	private double _p = 0.5;
+	private double _p = 0.02;
 	
 	@Override
 	public ArrayList<Symbol> crossOver(ArrayList<Symbol> parentA, ArrayList<Symbol> parentB)
