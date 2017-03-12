@@ -12,8 +12,8 @@ import ec2017.ga.general.Symbol;
 public class City implements Symbol
 {
 	private String _id;
-	private int _x;
-	private int _y;
+	private long _x;
+	private long _y;
 	private HashMap<City, Double> _distanceCache = new HashMap<>();
 	
 	/**
@@ -22,7 +22,7 @@ public class City implements Symbol
 	 * @param x The x coordinate
 	 * @param y The y coordinate
 	 */
-	public City(String id, int x, int y)
+	public City(String id, long x, long y)
 	{
 		_id = id;
 		_x = x;
@@ -51,8 +51,8 @@ public class City implements Symbol
 			return _distanceCache.get(city);
 		
 		// Some ol' school a^2 + b^2 == c^2. 
-		int xDistance = Math.abs(_x - city._x);
-		int yDistance = Math.abs(_y - city._y);
+		long xDistance = Math.abs(_x - city._x);
+		long yDistance = Math.abs(_y - city._y);
 		double distance = Math.sqrt(xDistance*xDistance + yDistance*yDistance);
 		
 		_distanceCache.put(city, distance);
