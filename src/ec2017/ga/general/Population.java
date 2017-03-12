@@ -2,6 +2,7 @@ package ec2017.ga.general;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 /**
  * The Population class represents an evolving population of individuals.
@@ -129,5 +130,11 @@ public class Population
 	{
 		// We can use this since Individual compares for fitness.
 		return Collections.max(_population);
+	}
+
+	public Individual getRandom() 
+	{
+		Random rand = new Random();
+		return _population.get(rand.nextInt(_population.size()));
 	}
 }

@@ -1,14 +1,21 @@
 package ea2017.ga.tsp;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import ec2017.ga.general.Individual;
 import ec2017.ga.general.Population;
 import ec2017.ga.general.PopulationFactory;
 import ec2017.ga.general.Symbol;
-import ec2017.ga.general.selection.NoParentSelectionMethod;
-import ec2017.ga.general.selection.NoSurvivorSelectionMethod;
-import ec2017.ga.general.variation.MutateNop;
+import ec2017.ga.general.selection.InterOverParentSelectionMethod;
+import ec2017.ga.general.selection.InterOverSurvivorSelectionMethod;
+import ec2017.ga.general.variation.InterOverOp;
 
 /**
  * The main entry point for our program.
@@ -20,33 +27,36 @@ public class TSPProblem
 	public static void main(String[] args) 
 	{
 		String filename = "default";
-		int generations = 50;
-		int populationSize = 1;
+		int generations = 10000;
+		int populationSize = 50;
 		// TODO read values from args;
 		
-		ArrayList<Symbol> cities = readCitiesFromFile(filename);
 		
-		// Here we're using a factory to create a population
-		// which evolves according to the operations and 
-		// selection methods we want to use in this algorithm.
-		PopulationFactory pf = new PopulationFactory();
-		pf.setSymbols(cities);
-		pf.setPopulationSize(populationSize);
-		pf.setCrossOverOperator(null);
-		pf.setMutateOperator(new MutateNop());
-		pf.setParentSelectionMethod(new NoParentSelectionMethod());
-		pf.setSurvivorSelectionMethod(new NoSurvivorSelectionMethod());
-		
-		Population population = pf.createPopulation(new Path());
-		
-		// Do our evolution
-		for (int i = 0; i < generations; i++)
-		{
-			population.evolve();
-		}
-		
-		Individual bestPath = population.getFittest();
-		System.out.println(bestPath.toString());
+		runInterOverTest();
+//		
+//		ArrayList<Symbol> cities = readCitiesFromFile(filename);
+//		
+//		// Here we're using a factory to create a population
+//		// which evolves according to the operations and 
+//		// selection methods we want to use in this algorithm.
+//		PopulationFactory pf = new PopulationFactory();
+//		pf.setSymbols(cities);
+//		pf.setPopulationSize(populationSize);
+//		pf.setCrossOverOperator(new InterOverOp());
+//		pf.setMutateOperator(null);
+//		pf.setParentSelectionMethod(new InterOverParentSelectionMethod());
+//		pf.setSurvivorSelectionMethod(new InterOverSurvivorSelectionMethod());
+//		
+//		Population population = pf.createPopulation(new Path());
+//		
+//		// Do our evolution
+//		for (int i = 0; i < generations; i++)
+//		{
+//			population.evolve();
+//		}
+//		
+//		Individual bestPath = population.getFittest();
+//		System.out.println(bestPath.toString());
 	}
 	
 	/**
@@ -60,15 +70,188 @@ public class TSPProblem
 		// Note : use SymCity to create instance for better speed.
 		//        only works on symetric datasets.
 		ArrayList<Symbol> cities = new ArrayList<Symbol>();
-		cities.add(new SymCity("a", 34, 90));
-		cities.add(new SymCity("b", 2, 34));
-		cities.add(new SymCity("c", 77, 64));
-		cities.add(new SymCity("d", 84, 26));
-		cities.add(new SymCity("e", 45, 3));
-		cities.add(new SymCity("f", 10, 45));
-		cities.add(new SymCity("g", 1, 10));
-		
+	
+		File file = new File (filename);
+		//File file = new File ("TSP_data/pr2392.tsp");
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(file));
+			String tempString = null;
+			int line = 1;
+			//once a line until to the end
+			while ((tempString = reader.readLine())!= null) {
+				if(line>=7 && !tempString.equals("EOF")) {
+					String[] tempCity = tempString.split(" ");
+					//since there are some decimal numbers, changes are needed
+					BigDecimal city_bdx = new BigDecimal(tempCity[1]);
+					BigDecimal city_bdy = new BigDecimal(tempCity[2]);
+					cities.add(new SymCity(tempCity[0], city_bdx.intValue(), city_bdy.intValue()));   				
+				}
+				line++;
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if(reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e1) {
+					
+				}
+			}
+		}
+
 		return cities;
+	}
+	
+	private static void printOptimal(String filename, ArrayList<Symbol> cities)
+	{
+		ArrayList<City> optimal = new ArrayList<City>();
+		
+		File file = new File (filename);
+		//File file = new File ("TSP_data/pr2392.tsp");
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(file));
+			String tempString = null;
+			int line = 0;
+			//once a line until to the end
+			while ((tempString = reader.readLine())!= null) {
+				if(line>=5 && !tempString.equals("EOF")) {
+					
+					
+					City city = null;
+					for(Symbol sym : cities)
+					{
+						City cit = (City)sym;
+						if (cit.getId().equals(tempString)) {city = cit; break;}
+						
+					}
+					
+					if (city !=null)optimal.add(city);
+					 				
+				}
+				line++;
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if(reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e1) {
+					
+				}
+			}
+		}
+		
+		Path path = new Path(optimal);
+		System.out.println(path.toString());
+	}
+	
+	private static void runInterOverTest()
+	{
+		int populationSize = 50;
+		int generations = 10000;
+		
+		StringBuilder sb = new StringBuilder();
+		File inputFolder = new File("TSP_data");
+		for(File inFile : inputFolder.listFiles())
+		{
+			sb.append("Input: ");
+			sb.append(inFile.getName());
+			sb.append("\n");
+			sb.append("Costs: \n");
+			
+			System.out.println("Reading..." + inFile.getName());
+			
+			double total = 0;
+			double shortest = Double.MAX_VALUE;
+			Path optimal = null;
+			
+			ArrayList<Symbol> cities = readCitiesFromFile(inFile.getPath());
+			
+			// Run 30x per file
+			final int RUNS = 1;
+			double[] values = new double[RUNS];
+			
+			for (int i = 0; i < RUNS; i++)
+			{
+				// Here we're using a factory to create a population
+				// which evolves according to the operations and 
+				// selection methods we want to use in this algorithm.
+				PopulationFactory pf = new PopulationFactory();
+				InterOverOp iop = new InterOverOp();
+				pf.setSymbols(cities);
+				pf.setPopulationSize(populationSize);
+				pf.setCrossOverOperator(null);
+				pf.setMutateOperator(iop);
+				pf.setParentSelectionMethod(new InterOverParentSelectionMethod());
+				pf.setSurvivorSelectionMethod(new InterOverSurvivorSelectionMethod());
+				
+				Population population = pf.createPopulation(new Path());
+				
+				iop.setPopulation(population);
+				
+				// Do our evolution
+				for (int j = 0; j < generations; j++)
+				{
+					population.evolve();
+				}
+				
+				Path bestPath = (Path)population.getFittest();
+				if(bestPath.getDistance() < shortest)
+				{
+					optimal = bestPath;
+					shortest = bestPath.getDistance();
+				}
+				
+				total += bestPath.getDistance();
+				values[i] = bestPath.getDistance();
+				sb.append(bestPath.getDistance());
+				sb.append(',');
+			}
+			
+			double mean = total / RUNS;
+			
+			// Work out standard deviation.
+			double stdDev = 0;
+			for(int k = 0; k < values.length; k++)
+			{
+				values[k] = values[k] - mean;
+				values[k] *= values[k];
+				stdDev += values[k];
+			}
+			stdDev /= RUNS;
+			
+			sb.append("\nMean cost: ");
+			sb.append(mean);
+			sb.append("\nStd Deviation: ");
+			sb.append(stdDev);
+			sb.append("\nBest path:\n");
+			sb.append(optimal.toString());
+			sb.append("\n\n");
+			
+			System.out.println(inFile.getPath());
+			System.out.println("Mean: " + mean + '\n');
+		}
+		
+		System.out.println(sb.toString());
+		
+		try
+		{
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("output/interover.txt")));
+			bw.write(sb.toString());
+			bw.close();
+		}
+		catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }
