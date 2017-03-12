@@ -49,25 +49,18 @@ public class Path implements Individual
 			throw new RuntimeException("You've tried to calculate the distance with not enough cities.");
 		}
 		
-		// We're going to set our starting city to eliminate the largest single distance between two cities.
-		// This should make our search space smaller, and give us the best version of this permutation 
-		// super cheap.
-		double maxSingleDistance = 0;
 		City previousCity = _cities.get(_cities.size() - 1);
 		
 		for (int i = 0; i < _cities.size(); i++)
 		{
 			City city = _cities.get(i);
 			double singleDistance = previousCity.distanceTo(city);
-			if (singleDistance > maxSingleDistance)
-			{
-				maxSingleDistance = singleDistance;
-				_startIndex = i;
-			}
+
+			// Uncomment this to start at 1
+//			if (city.getId().equals("1"))_startIndex = i;
 			
 			_distance += singleDistance;
 		}
-		_distance -= maxSingleDistance;
 	}
 	
 	/**
