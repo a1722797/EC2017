@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-import ec2017.ga.general.Individual;
 import ec2017.ga.general.Population;
 import ec2017.ga.general.PopulationFactory;
 import ec2017.ga.general.Symbol;
@@ -174,11 +173,12 @@ public class TSPProblem
 			ArrayList<Symbol> cities = readCitiesFromFile(inFile.getPath());
 			
 			// Run 30x per file
-			final int RUNS = 1;
+			final int RUNS = 30;
 			double[] values = new double[RUNS];
 			
 			for (int i = 0; i < RUNS; i++)
 			{
+				long starttime = System.currentTimeMillis();
 				// Here we're using a factory to create a population
 				// which evolves according to the operations and 
 				// selection methods we want to use in this algorithm.
@@ -212,6 +212,9 @@ public class TSPProblem
 				values[i] = bestPath.getDistance();
 				sb.append(bestPath.getDistance());
 				sb.append(',');
+				
+				long endtime = System.currentTimeMillis();
+				System.out.println("Run [" + i + "] -- " + ((endtime-starttime)/1000.0) + " seconds");
 			}
 			
 			double mean = total / RUNS;

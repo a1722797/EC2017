@@ -110,7 +110,7 @@ public class Population
 		}
 		
 		// And we work out who survives using our survivor selection method.
-		ArrayList<Individual> newPopulation = _survivorSelect.select(_population, newGeneration, _populationSize);
+		ArrayList<Individual> newPopulation = _survivorSelect.select(matingPool, newGeneration, _populationSize);
 		
 		// Certain combinations might give us less survivors than we need, so we'll complain.
 		if(newPopulation.size() != _populationSize)
