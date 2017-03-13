@@ -1,5 +1,6 @@
 package ec2017.ga.general.variation;
 
+import java.util.List;
 import java.util.ArrayList;
 
 import ec2017.ga.general.MutateOperator;
@@ -14,7 +15,7 @@ public class MutateNop implements MutateOperator
 {
 
 	@Override
-	public ArrayList<Symbol> mutate(ArrayList<Symbol> genotype) 
+	public List<Symbol> mutate(List<Symbol> genotype) 
 	{
 		return new ArrayList<Symbol>(genotype);
 	}
