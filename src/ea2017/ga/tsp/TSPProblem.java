@@ -1,5 +1,10 @@
 package ea2017.ga.tsp;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import ec2017.ga.general.Individual;
@@ -60,14 +65,37 @@ public class TSPProblem
 		// Note : use SymCity to create instance for better speed.
 		//        only works on symetric datasets.
 		ArrayList<Symbol> cities = new ArrayList<Symbol>();
-		cities.add(new SymCity("a", 34, 90));
-		cities.add(new SymCity("b", 2, 34));
-		cities.add(new SymCity("c", 77, 64));
-		cities.add(new SymCity("d", 84, 26));
-		cities.add(new SymCity("e", 45, 3));
-		cities.add(new SymCity("f", 10, 45));
-		cities.add(new SymCity("g", 1, 10));
-		
+	
+		//File file = new File ("TSP_data/eil51.tsp");
+		File file = new File ("TSP_data/pr2392.tsp");
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(file));
+			String tempString = null;
+			int line = 1;
+			//once a line until to the end
+			while ((tempString = reader.readLine())!= null) {
+				if(line>=7 && !tempString.equals("EOF")) {
+					String[] tempCity = tempString.split(" ");
+					//since there are some decimal numbers, changes are needed
+					BigDecimal city_bdx = new BigDecimal(tempCity[1]);
+					BigDecimal city_bdy = new BigDecimal(tempCity[2]);
+					cities.add(new SymCity(tempCity[0], city_bdx.intValue(), city_bdy.intValue()));   				
+				}
+				line++;
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if(reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e1) {
+					
+				}
+			}
+		}	
 		return cities;
 	}
 
