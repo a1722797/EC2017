@@ -1,4 +1,4 @@
-package ea2017.ga.tsp;
+package ec2017.ga.tsp;
 
 import java.util.ArrayList;
 

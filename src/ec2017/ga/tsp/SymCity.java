@@ -1,4 +1,4 @@
-package ea2017.ga.tsp;
+package ec2017.ga.tsp;
 
 /**
  * This class is identical to a city, but is has extra optimisation for the Symmetric case.

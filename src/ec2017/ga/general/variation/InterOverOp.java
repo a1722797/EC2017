@@ -3,9 +3,6 @@ package ec2017.ga.general.variation;
 import java.util.ArrayList;
 import java.util.Random;
 
-import ea2017.ga.tsp.City;
-import ec2017.ga.general.CrossOverOperator;
-import ec2017.ga.general.Individual;
 import ec2017.ga.general.MutateOperator;
 import ec2017.ga.general.Population;
 import ec2017.ga.general.Symbol;
@@ -27,11 +24,9 @@ public class InterOverOp implements MutateOperator
 		Symbol c = s.get(index);
 		
 		boolean terminate = false;
-		int repeats = 0;
 		//repeat
 		while(!terminate)
 		{
-			repeats++;
 			if (Math.random() <= _p)
 			{
 				//select the city c' from the remaining cities in S'
@@ -89,25 +84,6 @@ public class InterOverOp implements MutateOperator
 		
 		return genotype;
 		
-//		ArrayList<Symbol> child = new ArrayList<Symbol>();
-//		//add symbols before start of inversion
-//		for(int i = 0; i < start; i++) child.add(genotype.get(i));
-//		
-//		//invert section.
-//		int i = end;
-//		while(i >= start) child.add(genotype.get(i--));
-//		
-//		//add symbols after section.
-//		for(i = end+1; i < genotype.size(); i++) child.add(genotype.get(i));
-//		
-//		System.out.println("\n");
-//		for(Symbol sym : genotype)
-//		{
-//			City city = (City)sym;
-//			System.out.print(city.getId() + ", ");
-//		}
-//		
-//		return child;
 	}
 
 	public void setPopulation(Population population)

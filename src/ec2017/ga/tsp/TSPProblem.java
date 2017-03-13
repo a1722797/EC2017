@@ -1,4 +1,4 @@
-package ea2017.ga.tsp;
+package ec2017.ga.tsp;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,13 +25,14 @@ public class TSPProblem
 {
 	public static void main(String[] args) 
 	{
-		String filename = "default";
-		int generations = 10000;
-		int populationSize = 50;
+		runInterOver();
+		
+		// Example code
+//		String filename = "default";
+//		int generations = 10000;
+//		int populationSize = 50;
 		// TODO read values from args;
 		
-		
-		runInterOverTest();
 //		
 //		ArrayList<Symbol> cities = readCitiesFromFile(filename);
 //		
@@ -104,53 +105,7 @@ public class TSPProblem
 		return cities;
 	}
 	
-	private static void printOptimal(String filename, ArrayList<Symbol> cities)
-	{
-		ArrayList<City> optimal = new ArrayList<City>();
-		
-		File file = new File (filename);
-		//File file = new File ("TSP_data/pr2392.tsp");
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(file));
-			String tempString = null;
-			int line = 0;
-			//once a line until to the end
-			while ((tempString = reader.readLine())!= null) {
-				if(line>=5 && !tempString.equals("EOF")) {
-					
-					
-					City city = null;
-					for(Symbol sym : cities)
-					{
-						City cit = (City)sym;
-						if (cit.getId().equals(tempString)) {city = cit; break;}
-						
-					}
-					
-					if (city !=null)optimal.add(city);
-					 				
-				}
-				line++;
-			}
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if(reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e1) {
-					
-				}
-			}
-		}
-		
-		Path path = new Path(optimal);
-		System.out.println(path.toString());
-	}
-	
-	private static void runInterOverTest()
+	private static void runInterOver()
 	{
 		int populationSize = 50;
 		int generations = 10000;
@@ -193,7 +148,6 @@ public class TSPProblem
 				
 				Population population = pf.createPopulation(new Path());
 				
-				iop.setPopulation(population);
 				
 				// Do our evolution
 				for (int j = 0; j < generations; j++)

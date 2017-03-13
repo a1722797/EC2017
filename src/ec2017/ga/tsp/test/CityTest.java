@@ -1,11 +1,11 @@
-package ea2017.ga.tsp.test;
+package ec2017.ga.tsp.test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import ea2017.ga.tsp.City;
-import ea2017.ga.tsp.SymCity;
+import ec2017.ga.tsp.City;
+import ec2017.ga.tsp.SymCity;
 
 public class CityTest
 {
