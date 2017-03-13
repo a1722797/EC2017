@@ -1,7 +1,6 @@
 package ec2017.ga.tsp;
 
 import java.util.ArrayList;
-
 import ec2017.ga.general.CrossOverOperator;
 import ec2017.ga.general.Individual;
 import ec2017.ga.general.MutateOperator;

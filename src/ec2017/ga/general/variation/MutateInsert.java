@@ -1,10 +1,7 @@
 package ec2017.ga.general.variation;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Collections;
-
 import ec2017.ga.general.MutateOperator;
 import ec2017.ga.general.Symbol;
 
@@ -12,13 +9,13 @@ import ec2017.ga.general.Symbol;
  * 
  * @author Fergus
  */
-public class MutateInversion implements MutateOperator
+public class MutateInsert implements MutateOperator
 {
     @Override
-    public List<Symbol> mutate(List<Symbol> genotype) 
+    public ArrayList<Symbol> mutate(ArrayList<Symbol> genotype) 
     {
         Random rng = new Random();
-        List<Symbol> result = new ArrayList<Symbol>(genotype);
+        ArrayList<Symbol> result = new ArrayList<Symbol>(genotype);
 
         int x = rng.nextInt(result.size());
         int y = x;

@@ -1,6 +1,6 @@
 package ec2017.ga.general;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * The MutateOperator interface provides a method for mutating a genotype, thus creating new information
@@ -15,5 +15,5 @@ public interface MutateOperator
 	 * @param genotype
 	 * @return
 	 */
-	public List<Symbol> mutate(List<Symbol> genotype);
+	public ArrayList<Symbol> mutate(ArrayList<Symbol> genotype);
 }
