@@ -10,10 +10,11 @@ import java.util.ArrayList;
 public interface CrossOverOperator 
 {
 	/**
-	 * This method will construct a new child genotype from two parent genotypes. 
+	 * This method will construct two new child genotype from two parent genotypes. 
 	 * @param parentA First parent genotype
 	 * @param parentB Second parent genotype
-	 * @return Child genotype
+         * @param childA Output for first child
+         * @param childB Output for second child
 	 */
-	public ArrayList<Symbol> crossOver(ArrayList<Symbol> parentA, ArrayList<Symbol> parentB);
+    public ArrayList<ArrayList<Symbol>> crossOver(ArrayList<Symbol> parentA, ArrayList<Symbol> parentB);
 }
