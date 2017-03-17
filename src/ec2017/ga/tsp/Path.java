@@ -80,7 +80,7 @@ public class Path implements Individual
 	@Override
 	public double getFitness()
 	{
-		return -_distance;
+		return 1 / _distance;
 	}
 	
 	/**
