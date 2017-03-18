@@ -54,10 +54,11 @@ public class CrossOverPMX implements CrossOverOperator {
             }
 
             int toPlaceIndex = i;
-            while (child.get(i) != null) {
-                Symbol tracking = child.get(i);
+            while (child.get(toPlaceIndex) != null) {
+                Symbol tracking = child.get(toPlaceIndex);
                 toPlaceIndex = parent.indexOf(tracking);
             }
+            child.set(toPlaceIndex, toPlace);
         }
     }
 }
