@@ -53,6 +53,10 @@ public class CrossOverEdgeRecomb implements CrossOverOperator {
             edgeTable.remove(current);
             current = next;
         }
+
+        ArrayList<ArrayList<Symbol>> ret = new ArrayList();
+        ret.add(child);
+        return ret;
     }
 
     private Symbol pickNext(HashMap<Symbol, ArrayList<Symbol>> edgeTable,
