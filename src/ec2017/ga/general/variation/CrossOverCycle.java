@@ -2,6 +2,7 @@ package ec2017.ga.general.variation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.HashMap;
 
 import ec2017.ga.general.CrossOverOperator;
 import ec2017.ga.general.Symbol;
@@ -12,7 +13,7 @@ public class CrossOverCycle implements CrossOverOperator {
               ArrayList<Symbol> parentB)
     {
         ArrayList<ArrayList<Symbol>> result = new ArrayList();
-        
+
         ArrayList<Symbol> childA = new ArrayList();
         ArrayList<Symbol> childB = new ArrayList();
 
@@ -23,6 +24,14 @@ public class CrossOverCycle implements CrossOverOperator {
             childA.add(null);
             childB.add(null);
         }
+
+        // For efficiency, create a map from Symbols to their index in
+        // parentA
+        HashMap<Symbol, Integer> indexMap = new HashMap();
+        for (int i = 0; i < parentA.size(); i++) {
+        	indexMap.put(parentA.get(i), i);
+        }
+
 
         ArrayList<ArrayList<Integer>> cycleList = new ArrayList();
         HashSet<Integer> usedInCycle = new HashSet();
@@ -37,7 +46,7 @@ public class CrossOverCycle implements CrossOverOperator {
             while (!usedInCycle.contains(head)) {
                 usedInCycle.add(head);
                 newCycle.add(head);
-                head = parentA.indexOf(parentB.get(head));
+                head = indexMap.get(parentB.get(head));
             }
 
             cycleList.add(newCycle);
