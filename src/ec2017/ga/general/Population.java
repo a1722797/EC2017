@@ -18,7 +18,7 @@ public class Population
 	protected MutateOperator _mutateOp = null;
 	protected ParentSelectionMethod _parentSelect;
 	protected SurvivorSelectionMethod _survivorSelect;
-	double _pVal = 0.02;
+	double _pVal = 0.05;
 	
 	ArrayList<Individual> _population = new ArrayList<Individual>();
 

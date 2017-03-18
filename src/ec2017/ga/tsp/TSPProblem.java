@@ -14,8 +14,10 @@ import ec2017.ga.general.PopulationFactory;
 import ec2017.ga.general.Symbol;
 import ec2017.ga.general.selection.InterOverParentSelectionMethod;
 import ec2017.ga.general.selection.InterOverSurvivorSelectionMethod;
+import ec2017.ga.general.selection.RankBasdedParentSelectionMethod;
 import ec2017.ga.general.selection.RoundRobinSurvivorSelectionMethod;
 import ec2017.ga.general.selection.SUSParentSelectionMethod;
+import ec2017.ga.general.selection.WindowingFPSParentSelectionMethod;
 import ec2017.ga.general.variation.CrossOverCycle;
 import ec2017.ga.general.variation.InterOverOp;
 import ec2017.ga.general.variation.MutateInversion;
@@ -132,7 +134,7 @@ public class TSPProblem
 			ArrayList<Symbol> cities = readCitiesFromFile(inFile.getPath());
 			
 			// Run 30x per file
-			final int RUNS = 1;
+			final int RUNS = 3;
 			double[] values = new double[RUNS];
 			
 			for (int i = 0; i < RUNS; i++)
@@ -146,7 +148,7 @@ public class TSPProblem
 				pf.setPopulationSize(populationSize);
 				pf.setCrossOverOperator(new CrossOverCycle());
 				pf.setMutateOperator(new MutateInversion());
-				pf.setParentSelectionMethod(new SUSParentSelectionMethod());
+				pf.setParentSelectionMethod(new RankBasdedParentSelectionMethod());
 				pf.setSurvivorSelectionMethod(new RoundRobinSurvivorSelectionMethod(10));
 				
 				Population population = pf.createPopulation(new Path());
@@ -203,7 +205,7 @@ public class TSPProblem
 		try
 		{
 			/////////////////////////////////////////////////////////////// Change this filename
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("output/interover.txt")));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("output/CrossOverCycle-MutateInversion-RankBasdedParentSelectionMethod-RoundRobinSurvivorSelectionMethod.txt")));
 			bw.write(sb.toString());
 			bw.close();
 		}
