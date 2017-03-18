@@ -2,6 +2,7 @@ package ec2017.ga.general;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -17,6 +18,7 @@ public class Population
 	protected MutateOperator _mutateOp = null;
 	protected ParentSelectionMethod _parentSelect;
 	protected SurvivorSelectionMethod _survivorSelect;
+	double _pVal = 0.02;
 	
 	ArrayList<Individual> _population = new ArrayList<Individual>();
 
@@ -71,42 +73,34 @@ public class Population
 		
 		// We want to populate a new generation, if we have a cross over operation we'll
 		// use that to breed the mating pool.
-		if(_crossOverOp != null)
+		newGeneration = new ArrayList<Individual>();
+		
+		//Shuffle the mating pool to make sure our mating is random.
+		ArrayList<Individual> shuffledMatingPool = new ArrayList<Individual>(matingPool);
+		Collections.shuffle(shuffledMatingPool);
+		Iterator<Individual> it = shuffledMatingPool.iterator();
+		for(Individual parent : matingPool)
 		{
-			newGeneration = new ArrayList<Individual>();
+			Boolean mutate = Math.random() <= _pVal;
 			
-			//Shuffle the mating pool to make sure our mating is random.
-			ArrayList<Individual> shuffledMatingPool = new ArrayList<Individual>(matingPool);
-			Collections.shuffle(shuffledMatingPool);
-			
-			// Put on some Barry White and leave them to it...
-			for(int i = 0; i < matingPool.size(); i++)
+			if(_crossOverOp != null && !mutate)
 			{
 				// Sometimes parentA may be parentB, but this maintains ordering, making the InterOverOp easier.
-				Individual parentA = matingPool.get(i);
-				Individual parentB = shuffledMatingPool.get(i);
-				
-				Individual child = parentA.crossOver(parentB, _crossOverOp);
-				newGeneration.add(child);
+				Individual parentB = it.next();
+				ArrayList<Individual> children = parent.crossOver(parentB, _crossOverOp);
+				for (Individual child : children) newGeneration.add(child);
 			}
-		}
-		// Otherwise we'll just use the mating pool as the new generation.
-		else
-		{
-			newGeneration = matingPool;
-		}
-		
-		// If we have a mutation operation, we're going to use it here.
-		if (_mutateOp != null)
-		{
-			// Create a mutated version of our new generation.
-			ArrayList<Individual> mutantGeneration = new ArrayList<Individual>();
-			for(Individual child : newGeneration)
+			else
 			{
-				mutantGeneration.add(child.mutate(_mutateOp));
+				// If we have a mutation operation, we're going to use it here.
+				if (_mutateOp != null)
+				{
+					newGeneration.add(parent.mutate(_mutateOp));
+				}
+				
+				it.next();
 			}
 			
-			newGeneration = mutantGeneration;
 		}
 		
 		// And we work out who survives using our survivor selection method.
@@ -136,5 +130,10 @@ public class Population
 	{
 		Random rand = new Random();
 		return _population.get(rand.nextInt(_population.size()));
+	}
+	
+	public void setMutationProbability(double pVal)
+	{
+		_pVal = pVal;
 	}
 }
