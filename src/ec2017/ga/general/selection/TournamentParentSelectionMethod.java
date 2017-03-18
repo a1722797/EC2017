@@ -1,6 +1,6 @@
 package ec2017.ga.general.selection;
 
-import ea2017.ga.tsp.Path;
+import ec2017.ga.tsp.Path;
 import ec2017.ga.general.Individual;
 import ec2017.ga.general.ParentSelectionMethod;
 

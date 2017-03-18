@@ -86,8 +86,8 @@ public class Population
 				Individual parentA = matingPool.get(i);
 				Individual parentB = shuffledMatingPool.get(i);
 				
-				Individual child = parentA.crossOver(parentB, _crossOverOp);
-				newGeneration.add(child);
+				ArrayList<Individual> child = parentA.crossOver(parentB, _crossOverOp);
+				newGeneration.add((Individual) child);
 			}
 		}
 		// Otherwise we'll just use the mating pool as the new generation.
