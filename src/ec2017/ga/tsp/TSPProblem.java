@@ -14,7 +14,11 @@ import ec2017.ga.general.PopulationFactory;
 import ec2017.ga.general.Symbol;
 import ec2017.ga.general.selection.InterOverParentSelectionMethod;
 import ec2017.ga.general.selection.InterOverSurvivorSelectionMethod;
+import ec2017.ga.general.selection.RoundRobinSurvivorSelectionMethod;
+import ec2017.ga.general.selection.SUSParentSelectionMethod;
+import ec2017.ga.general.variation.CrossOverCycle;
 import ec2017.ga.general.variation.InterOverOp;
+import ec2017.ga.general.variation.MutateInversion;
 
 /**
  * The main entry point for our program.
@@ -107,8 +111,8 @@ public class TSPProblem
 	
 	private static void runInterOver()
 	{
-		int populationSize = 50;
-		int generations = 10000;
+		int populationSize = 20;
+		int generations = 2000;
 		
 		StringBuilder sb = new StringBuilder();
 		File inputFolder = new File("TSP_data");
@@ -128,7 +132,7 @@ public class TSPProblem
 			ArrayList<Symbol> cities = readCitiesFromFile(inFile.getPath());
 			
 			// Run 30x per file
-			final int RUNS = 30;
+			final int RUNS = 1;
 			double[] values = new double[RUNS];
 			
 			for (int i = 0; i < RUNS; i++)
@@ -138,13 +142,12 @@ public class TSPProblem
 				// which evolves according to the operations and 
 				// selection methods we want to use in this algorithm.
 				PopulationFactory pf = new PopulationFactory();
-				InterOverOp iop = new InterOverOp();
 				pf.setSymbols(cities);
 				pf.setPopulationSize(populationSize);
-				pf.setCrossOverOperator(null);
-				pf.setMutateOperator(iop);
-				pf.setParentSelectionMethod(new InterOverParentSelectionMethod());
-				pf.setSurvivorSelectionMethod(new InterOverSurvivorSelectionMethod());
+				pf.setCrossOverOperator(new CrossOverCycle());
+				pf.setMutateOperator(new MutateInversion());
+				pf.setParentSelectionMethod(new SUSParentSelectionMethod());
+				pf.setSurvivorSelectionMethod(new RoundRobinSurvivorSelectionMethod(10));
 				
 				Population population = pf.createPopulation(new Path());
 				
@@ -199,6 +202,7 @@ public class TSPProblem
 		
 		try
 		{
+			/////////////////////////////////////////////////////////////// Change this filename
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("output/interover.txt")));
 			bw.write(sb.toString());
 			bw.close();
