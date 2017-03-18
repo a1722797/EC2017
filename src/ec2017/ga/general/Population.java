@@ -86,17 +86,9 @@ public class Population
 			if(_crossOverOp != null && !mutate)
 			{
 				// Sometimes parentA may be parentB, but this maintains ordering, making the InterOverOp easier.
-<<<<<<< HEAD
 				Individual parentB = it.next();
 				ArrayList<Individual> children = parent.crossOver(parentB, _crossOverOp);
 				for (Individual child : children) newGeneration.add(child);
-=======
-				Individual parentA = matingPool.get(i);
-				Individual parentB = shuffledMatingPool.get(i);
-				
-				ArrayList<Individual> child = parentA.crossOver(parentB, _crossOverOp);
-				newGeneration.add((Individual) child);
->>>>>>> origin/master
 			}
 			else
 			{
