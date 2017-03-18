@@ -138,10 +138,14 @@ public class Path implements Individual
 	 * This method will use this instance as parentA, with the given instance as parentB.
 	 */
 	@Override
-	public Individual crossOver(Individual otherParent, CrossOverOperator crossOp) 
+	public ArrayList<Individual> crossOver(Individual otherParent, CrossOverOperator crossOp) 
 	{
-		ArrayList<Symbol> genotype = crossOp.crossOver(getGenotype(), otherParent.getGenotype());
-		return create(genotype);
+            ArrayList<ArrayList<Symbol>> children = crossOp.crossOver(getGenotype(), otherParent.getGenotype());
+            ArrayList<Individual> result = new ArrayList();
+            for (ArrayList<Symbol> genotype : children) {
+                result.add(create(genotype));
+            }
+            return result;
 	}
 	
 	/**

@@ -42,5 +42,5 @@ public interface Individual extends Comparable<Individual>
 	 * @param crossOp The cross-over operation
 	 * @return A new child Individual
 	 */
-	public Individual crossOver(Individual otherParent, CrossOverOperator crossOp);
+	public ArrayList<Individual> crossOver(Individual otherParent, CrossOverOperator crossOp);
 }
