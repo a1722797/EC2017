@@ -25,21 +25,19 @@ public class WindowingFPSParentSelectionMethod implements ParentSelectionMethod 
             sumOfFitness += population.get(i).getFitness();
         }
 
-
-
-
-
         for(int i = 0; i < population.size(); i++){
             weight[i] = (population.get(i).getFitness() - minest) / sumOfFitness;
         }
 
         for(int i = 0; i < population.size(); i++){
             notaccepted = true;
+            int loops = 0;
             while(notaccepted){     //stochastic acceptance
                 index = (int) (population.size() * Math.random());
-                if(Math.random() < weight[index] ){
+                if(Math.random() < weight[index] || loops > population.size() * 2){
                     notaccepted = false;    //the index of population is choosen
                 }
+                loops++;
             }
             selectedParents.add(population.get(index));
         }
