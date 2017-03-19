@@ -7,14 +7,26 @@ import ec2017.ga.general.MutateOperator;
 import ec2017.ga.general.Population;
 import ec2017.ga.general.Symbol;
 
+/**
+ * The InterOverOp is an implementation of the Inter-Over Operator for the TSP
+ * <https://cs.adelaide.edu.au/~zbyszek/Papers/p44.pdf>
+ * 
+ * While the Inter-Over operator is conceptually closer to a cross-over operation than
+ * a mutation operation, we're using the MutateOperator since the interface is more
+ * convenient for the work-flow.
+ * @author pat
+ *
+ */
 public class InterOverOp implements MutateOperator
 {
-	private double _p = 0.02;
+	private double _p = 0.02; // The probability of a new edge being added.
 	private Population _population;
 	
 	@Override
 	public ArrayList<Symbol> mutate(ArrayList<Symbol> genotype)
 	{
+		if(_population == null) throw new RuntimeException("The InterOverOp requires a reference to a Population instance using setPopulation before the mutate method is called.");
+		
 		ArrayList<Symbol> s = new ArrayList<Symbol>(genotype);
 		
 		Random rand = new Random();
@@ -66,11 +78,22 @@ public class InterOverOp implements MutateOperator
 		return s;
 	}
 	
+	/**
+	 * Sets the probability of a new edge being created. The default is 0.02
+	 * @param p
+	 */
 	public void setPValue(double p)
 	{
 		_p = p;
 	}
 	
+	/**
+	 * Basic inversion operator
+	 * @param genotype
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	private ArrayList<Symbol> invert(ArrayList<Symbol> genotype, int start, int end)
 	{
 		while(start < end)
@@ -86,6 +109,11 @@ public class InterOverOp implements MutateOperator
 		
 	}
 
+	/**
+	 * We need a reference to the population to allow us to select several individuals.
+	 * This must be set before the mutate method is called or a runtime error will occur.
+	 * @param population
+	 */
 	public void setPopulation(Population population)
 	{
 		_population = population;
