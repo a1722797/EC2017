@@ -29,7 +29,7 @@ public class ElistmOnlyChildrenSurvivorSelectionMethod implements SurvivorSelect
 
         for(int i = 0; i < candidates.size(); i++){
             for(int j = 0; j < candidates.size(); j++){
-                if(fitness[i] < fitness[j]){
+                if(fitness[i] > fitness[j]){
                     double tmp = 0;
                     int tmpIndex = -1;
 

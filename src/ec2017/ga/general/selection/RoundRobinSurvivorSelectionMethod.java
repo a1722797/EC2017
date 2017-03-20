@@ -33,7 +33,9 @@ public class RoundRobinSurvivorSelectionMethod implements SurvivorSelectionMetho
                 score++;
             }
         }
-        return score;
+        // HACK -- Something was reversed so it was looking for the longest path
+        // inverted the score so now it looks for shortest.
+        return -score;
     }
 
     private ArrayList<Individual> getBestNSurvivor(ArrayList<Individual> candidates, int[] score, int size){

@@ -17,7 +17,7 @@ import ec2017.ga.general.PopulationFactory;
 import ec2017.ga.general.SurvivorSelectionMethod;
 import ec2017.ga.general.Symbol;
 import ec2017.ga.general.selection.WindowingFPSParentSelectionMethod;
-import ec2017.ga.general.selection.E1337ismSurvivorSelect;
+import ec2017.ga.general.selection.ElistmBothSurvivorSelectionMethod;
 import ec2017.ga.general.variation.CrossOverCycle;
 import ec2017.ga.general.variation.InverOverOp;
 import ec2017.ga.general.variation.MutateInversion;
@@ -35,7 +35,7 @@ public class TSPProblem
 			new CrossOverCycle(),
 			new MutateInversion(),
 			new WindowingFPSParentSelectionMethod(),
-			new E1337ismSurvivorSelect());
+			new ElistmBothSurvivorSelectionMethod());
 	}
 	
 	/**
@@ -94,7 +94,6 @@ public class TSPProblem
 		
 		StringBuilder resultsLog = new StringBuilder();
 		StringBuilder generationLog = new StringBuilder();
-		generationLog.append("File,2000gen,5000gen,10000gen,20000gen");
 		
 		File inputFolder = new File("TSP_data");
 		for(File inFile : inputFolder.listFiles())
@@ -114,7 +113,7 @@ public class TSPProblem
 			ArrayList<Symbol> cities = readCitiesFromFile(inFile.getPath());
 			
 			// Run 30x per file
-			final int RUNS = 5;
+			final int RUNS = 3;
 			double[] values = new double[RUNS];
 
 			for (int i = 0; i < RUNS; i++)
@@ -150,7 +149,7 @@ public class TSPProblem
 				for (int j = 0; j < generations; j++)
 				{
 					population.evolve();
-					if (j == 2000 || j == 5000 || j%10000 == 0)
+					if (j == 1 || j % 500 == 0)
 					{
 						Path path = (Path)population.getFittest();
 						generationLog.append(path.getDistance());
