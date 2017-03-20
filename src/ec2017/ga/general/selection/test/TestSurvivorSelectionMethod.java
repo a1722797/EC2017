@@ -9,7 +9,6 @@ import org.junit.Test;
 import ec2017.ga.general.Individual;
 import ec2017.ga.general.SurvivorSelectionMethod;
 import ec2017.ga.general.Symbol;
-import ec2017.ga.general.selection.E1337ismSurvivorSelect;
 import ec2017.ga.general.selection.ElistmBothSurvivorSelectionMethod;
 import ec2017.ga.general.selection.ElistmOnlyChildrenSurvivorSelectionMethod;
 import ec2017.ga.general.selection.InverOverSurvivorSelectionMethod;
@@ -50,15 +49,7 @@ public class TestSurvivorSelectionMethod {
 		checkForInfiniteLoop(method);
 		checkForWorstFit(method);
 	}
-	
-	@Test
-	public void testE1337ismSurvivorSelectionMethod() 
-	{
-		SurvivorSelectionMethod method = new E1337ismSurvivorSelect();
-		checkForInfiniteLoop(method);
-		checkForWorstFit(method);
-	}
-	
+
 	private void checkForInfiniteLoop(SurvivorSelectionMethod method)
 	{
 		ArrayList<Symbol> cities = new ArrayList<Symbol>();
