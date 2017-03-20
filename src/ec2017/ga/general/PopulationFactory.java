@@ -15,6 +15,8 @@ public class PopulationFactory
 	private MutateOperator _mutateOp = null;
 	private ParentSelectionMethod _parentSelect = null;
 	private SurvivorSelectionMethod _survivorSelect = null;
+	private double _pMutate = 1;
+	private double _pXOver = 1;
 	
 	/**
 	 * The initial set of symbols for our genotype.
@@ -69,6 +71,24 @@ public class PopulationFactory
 	{
 		_survivorSelect = selectionMethod;
 	}
+	
+	/**
+	 * Sets the probability (between 0 and 1) that an individual will mutate each generation.
+	 * @param pVal
+	 */
+	public void setMutateProbability(double pVal)
+	{
+		_pMutate = pVal;
+	}
+	
+	/**
+	 * Sets the probability (between 0 and 1) that the an individual will cross over each generation.
+	 * @param pVal
+	 */
+	public void setCrossOverProbability(double pVal)
+	{
+		_pXOver = pVal;
+	}
 
 	/**
 	 * Checks that everything has been set and creates a new population.
@@ -86,7 +106,11 @@ public class PopulationFactory
 		if (_survivorSelect == null)
 			throw new IllegalArgumentException("Population cannot be created without a survivor selection method");
 		
-		return new Population(_symbols, _populationSize, _crossOverOp, _mutateOp, _parentSelect, _survivorSelect, mother);
+		Population pop = new Population(_symbols, _populationSize, _crossOverOp, _mutateOp, _parentSelect, _survivorSelect, mother);
+		pop.seCrossOverProbability(_pXOver);
+		pop.setMutationProbability(_pMutate);
+		
+		return pop;
 	}
 
 }

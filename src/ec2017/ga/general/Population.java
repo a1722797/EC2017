@@ -18,7 +18,8 @@ public class Population
 	protected MutateOperator _mutateOp = null;
 	protected ParentSelectionMethod _parentSelect;
 	protected SurvivorSelectionMethod _survivorSelect;
-	double _pVal = 0.05;
+	double _pMutate = 1;
+	double _pXover = 1;
 	
 	ArrayList<Individual> _population = new ArrayList<Individual>();
 
@@ -81,26 +82,24 @@ public class Population
 		Iterator<Individual> it = shuffledMatingPool.iterator();
 		for(Individual parent : matingPool)
 		{
-			Boolean mutate = Math.random() <= _pVal;
+			Boolean mutate = Math.random() <= _pMutate;
+			Boolean xover = Math.random() <= _pXover;
 			
-			if(_crossOverOp != null && !mutate)
+			if(_crossOverOp != null && xover)
 			{
 				// Sometimes parentA may be parentB, but this maintains ordering, making the InterOverOp easier.
 				Individual parentB = it.next();
 				ArrayList<Individual> children = parent.crossOver(parentB, _crossOverOp);
 				for (Individual child : children) newGeneration.add(child);
 			}
-			else
+			
+			// If we have a mutation operation, we're going to use it here.
+			if (_mutateOp != null && mutate)
 			{
-				// If we have a mutation operation, we're going to use it here.
-				if (_mutateOp != null)
-				{
-					newGeneration.add(parent.mutate(_mutateOp));
-				}
-				
-				it.next();
+				newGeneration.add(parent.mutate(_mutateOp));
 			}
 			
+			if (!xover)it.next();
 		}
 		
 		// And we work out who survives using our survivor selection method.
@@ -134,6 +133,11 @@ public class Population
 	
 	public void setMutationProbability(double pVal)
 	{
-		_pVal = pVal;
+		_pMutate = pVal;
+	}
+	
+	public void seCrossOverProbability(double pVal)
+	{
+		_pXover = pVal;
 	}
 }
