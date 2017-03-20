@@ -9,17 +9,17 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import ec2017.ga.general.CrossOverOperator;
+import ec2017.ga.general.MutateOperator;
+import ec2017.ga.general.ParentSelectionMethod;
 import ec2017.ga.general.Population;
 import ec2017.ga.general.PopulationFactory;
+import ec2017.ga.general.SurvivorSelectionMethod;
 import ec2017.ga.general.Symbol;
-import ec2017.ga.general.selection.InterOverParentSelectionMethod;
-import ec2017.ga.general.selection.InterOverSurvivorSelectionMethod;
-import ec2017.ga.general.selection.RankBasdedParentSelectionMethod;
-import ec2017.ga.general.selection.RoundRobinSurvivorSelectionMethod;
-import ec2017.ga.general.selection.SUSParentSelectionMethod;
 import ec2017.ga.general.selection.WindowingFPSParentSelectionMethod;
+import ec2017.ga.general.selection.E1337ismSurvivorSelect;
 import ec2017.ga.general.variation.CrossOverCycle;
-import ec2017.ga.general.variation.InterOverOp;
+import ec2017.ga.general.variation.InverOverOp;
 import ec2017.ga.general.variation.MutateInversion;
 
 /**
@@ -31,38 +31,11 @@ public class TSPProblem
 {
 	public static void main(String[] args) 
 	{
-		runInterOver();
-		
-		// Example code
-//		String filename = "default";
-//		int generations = 10000;
-//		int populationSize = 50;
-		// TODO read values from args;
-		
-//		
-//		ArrayList<Symbol> cities = readCitiesFromFile(filename);
-//		
-//		// Here we're using a factory to create a population
-//		// which evolves according to the operations and 
-//		// selection methods we want to use in this algorithm.
-//		PopulationFactory pf = new PopulationFactory();
-//		pf.setSymbols(cities);
-//		pf.setPopulationSize(populationSize);
-//		pf.setCrossOverOperator(new InterOverOp());
-//		pf.setMutateOperator(null);
-//		pf.setParentSelectionMethod(new InterOverParentSelectionMethod());
-//		pf.setSurvivorSelectionMethod(new InterOverSurvivorSelectionMethod());
-//		
-//		Population population = pf.createPopulation(new Path());
-//		
-//		// Do our evolution
-//		for (int i = 0; i < generations; i++)
-//		{
-//			population.evolve();
-//		}
-//		
-//		Individual bestPath = population.getFittest();
-//		System.out.println(bestPath.toString());
+		runTests(
+			new CrossOverCycle(),
+			new MutateInversion(),
+			new WindowingFPSParentSelectionMethod(),
+			new E1337ismSurvivorSelect());
 	}
 	
 	/**
@@ -72,7 +45,6 @@ public class TSPProblem
 	 */
 	private static ArrayList<Symbol> readCitiesFromFile(String filename)
 	{
-		//TODO
 		// Note : use SymCity to create instance for better speed.
 		//        only works on symetric datasets.
 		ArrayList<Symbol> cities = new ArrayList<Symbol>();
@@ -111,20 +83,28 @@ public class TSPProblem
 		return cities;
 	}
 	
-	private static void runInterOver()
+	private static void runTests(
+			CrossOverOperator xop,
+			MutateOperator mop,
+			ParentSelectionMethod pmeth,
+			SurvivorSelectionMethod smeth)
 	{
-		int populationSize = 20;
-		int generations = 2000;
+		int populationSize = 50;
+		int generations = 10000;
 		
-		StringBuilder sb = new StringBuilder();
+		StringBuilder resultsLog = new StringBuilder();
+		StringBuilder generationLog = new StringBuilder();
+		generationLog.append("File,2000gen,5000gen,10000gen,20000gen");
+		
 		File inputFolder = new File("TSP_data");
 		for(File inFile : inputFolder.listFiles())
 		{
-			sb.append("Input: ");
-			sb.append(inFile.getName());
-			sb.append("\n");
-			sb.append("Costs: \n");
-			
+			resultsLog.append("Input: ");
+			resultsLog.append(inFile.getName());
+			resultsLog.append(System.lineSeparator());
+			resultsLog.append("Costs:");
+			resultsLog.append(System.lineSeparator());
+
 			System.out.println("Reading..." + inFile.getName());
 			
 			double total = 0;
@@ -134,9 +114,9 @@ public class TSPProblem
 			ArrayList<Symbol> cities = readCitiesFromFile(inFile.getPath());
 			
 			// Run 30x per file
-			final int RUNS = 3;
+			final int RUNS = 5;
 			double[] values = new double[RUNS];
-			
+
 			for (int i = 0; i < RUNS; i++)
 			{
 				long starttime = System.currentTimeMillis();
@@ -146,19 +126,39 @@ public class TSPProblem
 				PopulationFactory pf = new PopulationFactory();
 				pf.setSymbols(cities);
 				pf.setPopulationSize(populationSize);
-				pf.setCrossOverOperator(new CrossOverCycle());
-				pf.setMutateOperator(new MutateInversion());
-				pf.setParentSelectionMethod(new RankBasdedParentSelectionMethod());
-				pf.setSurvivorSelectionMethod(new RoundRobinSurvivorSelectionMethod(10));
+				pf.setCrossOverOperator(xop);
+				pf.setMutateOperator(mop);
+				pf.setParentSelectionMethod(pmeth);
+				pf.setSurvivorSelectionMethod(smeth);
 				
 				Population population = pf.createPopulation(new Path());
 				
+				// The InverOverOp needs a reference to the population,
+				// obviously we need to wait till we have a population.
+				if (InverOverOp.class.isAssignableFrom(mop.getClass()))
+				{
+					InverOverOp iop = (InverOverOp)mop;
+					iop.setPopulation(population);
+				}
+//				population.setCrossOverProbability(0.25);
+//				population.setMutationProbability(0.75);
+				
+				generationLog.append(inFile.getName());
+				generationLog.append(',');
 				
 				// Do our evolution
 				for (int j = 0; j < generations; j++)
 				{
 					population.evolve();
+					if (j == 2000 || j == 5000 || j%10000 == 0)
+					{
+						Path path = (Path)population.getFittest();
+						generationLog.append(path.getDistance());
+						generationLog.append(',');
+					}
 				}
+				
+				generationLog.append(System.lineSeparator());
 				
 				Path bestPath = (Path)population.getFittest();
 				if(bestPath.getDistance() < shortest)
@@ -169,8 +169,8 @@ public class TSPProblem
 				
 				total += bestPath.getDistance();
 				values[i] = bestPath.getDistance();
-				sb.append(bestPath.getDistance());
-				sb.append(',');
+				resultsLog.append(bestPath.getDistance());
+				resultsLog.append(',');
 				
 				long endtime = System.currentTimeMillis();
 				System.out.println("Run [" + i + "] -- " + ((endtime-starttime)/1000.0) + " seconds");
@@ -189,25 +189,44 @@ public class TSPProblem
 			stdDev /= RUNS;
 			stdDev = Math.sqrt(stdDev);
 			
-			sb.append("\nMean cost: ");
-			sb.append(mean);
-			sb.append("\nStd Deviation: ");
-			sb.append(stdDev);
-			sb.append("\nBest path:\n");
-			sb.append(optimal.toString());
-			sb.append("\n\n");
+			resultsLog.append(System.lineSeparator());
+			resultsLog.append("Mean cost: ");
+			resultsLog.append(mean);
+			resultsLog.append(System.lineSeparator());
+			resultsLog.append("Std Deviation: ");
+			resultsLog.append(stdDev);
+			resultsLog.append(System.lineSeparator());
+			resultsLog.append("Best path:");
+			resultsLog.append(System.lineSeparator());
+			resultsLog.append(optimal.toString());
+			resultsLog.append(System.lineSeparator());
+			resultsLog.append(System.lineSeparator());
 			
 			System.out.println(inFile.getPath());
 			System.out.println("Mean: " + mean + '\n');
 		}
 		
-		System.out.println(sb.toString());
+		System.out.println(resultsLog.toString());
 		
 		try
 		{
-			/////////////////////////////////////////////////////////////// Change this filename
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("output/CrossOverCycle-MutateInversion-RankBasdedParentSelectionMethod-RoundRobinSurvivorSelectionMethod.txt")));
-			bw.write(sb.toString());
+			StringBuilder fileName = new StringBuilder();
+			if (xop != null)fileName.append(xop.getClass().getSimpleName());
+			else fileName.append("none");
+			fileName.append('-');
+			if (mop != null)fileName.append(mop.getClass().getSimpleName());
+			else fileName.append("none");
+			fileName.append('-');
+			fileName.append(pmeth.getClass().getSimpleName());
+			fileName.append('-');
+			fileName.append(smeth.getClass().getSimpleName());
+			
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("output/" + fileName.toString() + ".txt")));
+			bw.write(resultsLog.toString());
+			bw.close();
+			
+			bw = new BufferedWriter(new FileWriter(new File("output/" + fileName.toString()+ "-generations.csv")));
+			bw.write(generationLog.toString());
 			bw.close();
 		}
 		catch (IOException e) 
