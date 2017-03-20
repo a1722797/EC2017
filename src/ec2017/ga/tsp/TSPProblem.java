@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import ec2017.ga.general.CrossOverOperator;
 import ec2017.ga.general.MutateOperator;
@@ -18,7 +20,9 @@ import ec2017.ga.general.SurvivorSelectionMethod;
 import ec2017.ga.general.Symbol;
 import ec2017.ga.general.selection.WindowingFPSParentSelectionMethod;
 import ec2017.ga.general.selection.ElistmBothSurvivorSelectionMethod;
+import ec2017.ga.general.selection.RoundRobinSurvivorSelectionMethod;
 import ec2017.ga.general.variation.CrossOverCycle;
+import ec2017.ga.general.variation.CrossOverPMX;
 import ec2017.ga.general.variation.InverOverOp;
 import ec2017.ga.general.variation.MutateInversion;
 
@@ -31,11 +35,59 @@ public class TSPProblem
 {
 	public static void main(String[] args) 
 	{
-		runTests(
-			new CrossOverCycle(),
-			new MutateInversion(),
-			new WindowingFPSParentSelectionMethod(),
-			new ElistmBothSurvivorSelectionMethod());
+		runBenchMarks();
+	}
+	
+	private static void runBenchMarks()
+	{
+		ExecutorService executor = Executors.newFixedThreadPool(3);       
+        
+		Runnable algA = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				benchMark(
+						new CrossOverPMX(),
+						new MutateInversion(),
+						new WindowingFPSParentSelectionMethod(),
+						new RoundRobinSurvivorSelectionMethod(10));
+			}
+		};
+		
+		Runnable algB = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				benchMark(
+						new CrossOverCycle(),
+						new MutateInversion(),
+						new WindowingFPSParentSelectionMethod(),
+						new ElistmBothSurvivorSelectionMethod());
+			}
+		};
+		
+		Runnable algC = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				benchMark(
+						new CrossOverPMX(),
+						new MutateInversion(),
+						new WindowingFPSParentSelectionMethod(),
+						new ElistmBothSurvivorSelectionMethod());
+			}
+		};
+		
+		executor.execute(algA);
+		executor.execute(algB);
+		executor.execute(algC);
+        executor.shutdown();     
+        while (!executor.isTerminated());//Block
+        System.out.println("************* Done *************");
+
 	}
 	
 	/**
@@ -83,15 +135,27 @@ public class TSPProblem
 		return cities;
 	}
 	
-	private static void runTests(
+	private static void benchMark(
 			CrossOverOperator xop,
 			MutateOperator mop,
 			ParentSelectionMethod pmeth,
 			SurvivorSelectionMethod smeth)
 	{
-		int populationSize = 50;
-		int generations = 10000;
-		
+		runTests(xop, mop, pmeth, smeth, 20, 20000, 5);
+		runTests(xop, mop, pmeth, smeth, 50, 20000, 5);
+		runTests(xop, mop, pmeth, smeth, 100, 20000, 5);
+		runTests(xop, mop, pmeth, smeth, 2000, 20000, 5);
+	}
+	
+	private static void runTests(
+			CrossOverOperator xop,
+			MutateOperator mop,
+			ParentSelectionMethod pmeth,
+			SurvivorSelectionMethod smeth,
+			int populationSize,
+			int generations,
+			int runs)
+	{		
 		StringBuilder resultsLog = new StringBuilder();
 		StringBuilder generationLog = new StringBuilder();
 		
@@ -111,12 +175,10 @@ public class TSPProblem
 			Path optimal = null;
 			
 			ArrayList<Symbol> cities = readCitiesFromFile(inFile.getPath());
-			
-			// Run 30x per file
-			final int RUNS = 3;
-			double[] values = new double[RUNS];
 
-			for (int i = 0; i < RUNS; i++)
+			double[] values = new double[runs];
+
+			for (int i = 0; i < runs; i++)
 			{
 				long starttime = System.currentTimeMillis();
 				// Here we're using a factory to create a population
@@ -175,7 +237,7 @@ public class TSPProblem
 				System.out.println("Run [" + i + "] -- " + ((endtime-starttime)/1000.0) + " seconds");
 			}
 			
-			double mean = total / RUNS;
+			double mean = total / runs;
 			
 			// Work out standard deviation.
 			double stdDev = 0;
@@ -185,7 +247,7 @@ public class TSPProblem
 				values[k] *= values[k];
 				stdDev += values[k];
 			}
-			stdDev /= RUNS;
+			stdDev /= runs;
 			stdDev = Math.sqrt(stdDev);
 			
 			resultsLog.append(System.lineSeparator());
@@ -219,6 +281,8 @@ public class TSPProblem
 			fileName.append(pmeth.getClass().getSimpleName());
 			fileName.append('-');
 			fileName.append(smeth.getClass().getSimpleName());
+			fileName.append("pop_");
+			fileName.append(populationSize);
 			
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("output/" + fileName.toString() + ".txt")));
 			bw.write(resultsLog.toString());
