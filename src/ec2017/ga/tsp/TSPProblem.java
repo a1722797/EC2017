@@ -187,6 +187,7 @@ public class TSPProblem
 				stdDev += values[k];
 			}
 			stdDev /= RUNS;
+			stdDev = Math.sqrt(stdDev);
 			
 			sb.append("\nMean cost: ");
 			sb.append(mean);
