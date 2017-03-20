@@ -9,6 +9,7 @@ import org.junit.Test;
 import ec2017.ga.general.Individual;
 import ec2017.ga.general.SurvivorSelectionMethod;
 import ec2017.ga.general.Symbol;
+import ec2017.ga.general.selection.E1337ismSurvivorSelect;
 import ec2017.ga.general.selection.ElistmBothSurvivorSelectionMethod;
 import ec2017.ga.general.selection.ElistmOnlyChildrenSurvivorSelectionMethod;
 import ec2017.ga.general.selection.InterOverSurvivorSelectionMethod;
@@ -46,6 +47,14 @@ public class TestSurvivorSelectionMethod {
 	public void testRoundRobinSurvivorSelectionMethod() 
 	{
 		SurvivorSelectionMethod method = new RoundRobinSurvivorSelectionMethod(10);
+		checkForInfiniteLoop(method);
+		checkForWorstFit(method);
+	}
+	
+	@Test
+	public void testE1337ismSurvivorSelectionMethod() 
+	{
+		SurvivorSelectionMethod method = new E1337ismSurvivorSelect();
 		checkForInfiniteLoop(method);
 		checkForWorstFit(method);
 	}
