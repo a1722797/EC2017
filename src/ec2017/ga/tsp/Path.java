@@ -179,7 +179,8 @@ public class Path implements Individual
 		StringBuilder sb = new StringBuilder();
 		sb.append("Distance:");
 		sb.append(_distance);
-		sb.append("\nPath: [");
+		sb.append(System.lineSeparator());
+		sb.append("Path: [");
 		int i = _startIndex;
 		do
 		{
