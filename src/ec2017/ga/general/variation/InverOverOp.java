@@ -17,7 +17,7 @@ import ec2017.ga.general.Symbol;
  * @author pat
  *
  */
-public class InterOverOp implements MutateOperator
+public class InverOverOp implements MutateOperator
 {
 	private double _p = 0.02; // The probability of a new edge being added.
 	private Population _population;

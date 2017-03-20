@@ -12,7 +12,7 @@ import ec2017.ga.general.Symbol;
 import ec2017.ga.general.selection.E1337ismSurvivorSelect;
 import ec2017.ga.general.selection.ElistmBothSurvivorSelectionMethod;
 import ec2017.ga.general.selection.ElistmOnlyChildrenSurvivorSelectionMethod;
-import ec2017.ga.general.selection.InterOverSurvivorSelectionMethod;
+import ec2017.ga.general.selection.InverOverSurvivorSelectionMethod;
 import ec2017.ga.general.selection.RoundRobinSurvivorSelectionMethod;
 import ec2017.ga.tsp.City;
 import ec2017.ga.tsp.Path;
@@ -38,7 +38,7 @@ public class TestSurvivorSelectionMethod {
 	@Test
 	public void testInterOverSurvivorSelectionMethod() 
 	{
-		SurvivorSelectionMethod method = new InterOverSurvivorSelectionMethod();
+		SurvivorSelectionMethod method = new InverOverSurvivorSelectionMethod();
 		checkForInfiniteLoop(method);
 		checkForWorstFit(method);
 	}

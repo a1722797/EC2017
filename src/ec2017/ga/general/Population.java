@@ -136,7 +136,7 @@ public class Population
 		_pMutate = pVal;
 	}
 	
-	public void seCrossOverProbability(double pVal)
+	public void setCrossOverProbability(double pVal)
 	{
 		_pXover = pVal;
 	}

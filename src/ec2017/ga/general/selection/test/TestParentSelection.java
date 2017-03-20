@@ -9,7 +9,7 @@ import org.junit.Test;
 import ec2017.ga.general.Individual;
 import ec2017.ga.general.ParentSelectionMethod;
 import ec2017.ga.general.Symbol;
-import ec2017.ga.general.selection.InterOverParentSelectionMethod;
+import ec2017.ga.general.selection.InverOverParentSelectionMethod;
 import ec2017.ga.general.selection.OriginalFPSParentSelectionMethod;
 import ec2017.ga.general.selection.RankBasdedParentSelectionMethod;
 import ec2017.ga.general.selection.SUSParentSelectionMethod;
@@ -60,7 +60,7 @@ public class TestParentSelection {
 	@Test
 	public void testInterOverParentSelectionMethod() 
 	{
-		checkForInfiniteLoop(new InterOverParentSelectionMethod());
+		checkForInfiniteLoop(new InverOverParentSelectionMethod());
 	}
 	
 	private void checkForInfiniteLoop(ParentSelectionMethod method)

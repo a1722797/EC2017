@@ -107,7 +107,7 @@ public class PopulationFactory
 			throw new IllegalArgumentException("Population cannot be created without a survivor selection method");
 		
 		Population pop = new Population(_symbols, _populationSize, _crossOverOp, _mutateOp, _parentSelect, _survivorSelect, mother);
-		pop.seCrossOverProbability(_pXOver);
+		pop.setCrossOverProbability(_pXOver);
 		pop.setMutationProbability(_pMutate);
 		
 		return pop;

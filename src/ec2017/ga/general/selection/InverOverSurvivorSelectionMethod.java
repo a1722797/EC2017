@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import ec2017.ga.general.Individual;
 import ec2017.ga.general.SurvivorSelectionMethod;
 
-public class InterOverSurvivorSelectionMethod implements SurvivorSelectionMethod
+public class InverOverSurvivorSelectionMethod implements SurvivorSelectionMethod
 {
 
 	@Override
