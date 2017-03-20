@@ -18,9 +18,9 @@ public class Path implements Individual
 	private double _distance = 0; // If we see a winning distance of zero we'll know we messed up.
 	
 	/**
-	 * This is package protected since we only want to use this for a seed individual. 
+	 * This is should only be used for a seed individual and for testing. 
 	 */
-	Path()
+	public Path()
 	{
 	}
 	
@@ -141,8 +141,9 @@ public class Path implements Individual
 	public ArrayList<Individual> crossOver(Individual otherParent, CrossOverOperator crossOp) 
 	{
             ArrayList<ArrayList<Symbol>> children = crossOp.crossOver(getGenotype(), otherParent.getGenotype());
-            ArrayList<Individual> result = new ArrayList();
-            for (ArrayList<Symbol> genotype : children) {
+            ArrayList<Individual> result = new ArrayList<>();
+            for (ArrayList<Symbol> genotype : children)
+            {
                 result.add(create(genotype));
             }
             return result;

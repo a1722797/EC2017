@@ -21,25 +21,33 @@ public class TestSurvivorSelectionMethod {
 	@Test
 	public void testElistmBothSurvivorSelectionMethod() 
 	{
-		checkForInfiniteLoop(new ElistmBothSurvivorSelectionMethod());
+		SurvivorSelectionMethod method = new ElistmBothSurvivorSelectionMethod();
+		checkForInfiniteLoop(method);
+		checkForWorstFit(method);
 	}
 	
 	@Test
 	public void testElistmOnlyChildrenSurvivorSelectionMethod() 
 	{
-		checkForInfiniteLoop(new ElistmOnlyChildrenSurvivorSelectionMethod());
+		SurvivorSelectionMethod method = new ElistmOnlyChildrenSurvivorSelectionMethod();
+		checkForInfiniteLoop(method);
+		checkForWorstFit(method);
 	}
 
 	@Test
 	public void testInterOverSurvivorSelectionMethod() 
 	{
-		checkForInfiniteLoop(new InterOverSurvivorSelectionMethod());
+		SurvivorSelectionMethod method = new InterOverSurvivorSelectionMethod();
+		checkForInfiniteLoop(method);
+		checkForWorstFit(method);
 	}
 
 	@Test
 	public void testRoundRobinSurvivorSelectionMethod() 
 	{
-		checkForInfiniteLoop(new RoundRobinSurvivorSelectionMethod(10));
+		SurvivorSelectionMethod method = new RoundRobinSurvivorSelectionMethod(10);
+		checkForInfiniteLoop(method);
+		checkForWorstFit(method);
 	}
 	
 	private void checkForInfiniteLoop(SurvivorSelectionMethod method)
@@ -90,5 +98,47 @@ public class TestSurvivorSelectionMethod {
 		}
 		
 		assertFalse(t.isAlive());
+	}
+	
+	private void checkForWorstFit(SurvivorSelectionMethod method)
+	{
+		Individual best = new Path()
+		{
+			@Override
+			public double getFitness()
+			{
+				return 200.0;
+			}
+		};
+		
+		Individual okay = new Path()
+		{
+			@Override
+			public double getFitness()
+			{
+				return 100.0;
+			}
+		};
+		
+		Individual worst = new Path()
+		{
+			@Override
+			public double getFitness()
+			{
+				return 50.0;
+			}
+		};
+		
+		ArrayList<Individual> oldGeneration = new ArrayList<Individual>();
+		oldGeneration.add(okay);
+		
+		ArrayList<Individual> newGeneration = new ArrayList<Individual>();
+		newGeneration.add(best);
+		newGeneration.add(worst);
+		
+		ArrayList<Individual> result = method.select(oldGeneration, newGeneration, 1);
+		double fitness = result.get(0).getFitness();
+		
+		assertTrue(fitness == best.getFitness());
 	}
 }
