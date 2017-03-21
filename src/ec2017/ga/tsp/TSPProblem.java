@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import ec2017.ga.general.CrossOverOperator;
 import ec2017.ga.general.MutateOperator;
@@ -48,10 +49,10 @@ public class TSPProblem
 			public void run()
 			{
 				benchMark(
-						new CrossOverPMX(),
-						new MutateInversion(),
-						new WindowingFPSParentSelectionMethod(),
-						new RoundRobinSurvivorSelectionMethod(10));
+					new CrossOverPMX(),
+					new MutateInversion(),
+					new WindowingFPSParentSelectionMethod(),
+					new RoundRobinSurvivorSelectionMethod(10));
 			}
 		};
 		
@@ -61,10 +62,10 @@ public class TSPProblem
 			public void run()
 			{
 				benchMark(
-						new CrossOverCycle(),
-						new MutateInversion(),
-						new WindowingFPSParentSelectionMethod(),
-						new ElistmBothSurvivorSelectionMethod());
+					new CrossOverCycle(),
+					new MutateInversion(),
+					new WindowingFPSParentSelectionMethod(),
+					new ElistmBothSurvivorSelectionMethod());
 			}
 		};
 		
@@ -74,10 +75,10 @@ public class TSPProblem
 			public void run()
 			{
 				benchMark(
-						new CrossOverPMX(),
-						new MutateInversion(),
-						new WindowingFPSParentSelectionMethod(),
-						new ElistmBothSurvivorSelectionMethod());
+					new CrossOverPMX(),
+					new MutateInversion(),
+					new WindowingFPSParentSelectionMethod(),
+					new ElistmBothSurvivorSelectionMethod());
 			}
 		};
 		
@@ -85,7 +86,14 @@ public class TSPProblem
 		executor.execute(algB);
 		executor.execute(algC);
         executor.shutdown();     
-        while (!executor.isTerminated());//Block
+        try 
+        {
+			executor.awaitTermination(72, TimeUnit.HOURS);
+		} 
+        catch (InterruptedException e) 
+        {
+			e.printStackTrace();
+		}
         System.out.println("************* Done *************");
 
 	}
@@ -141,10 +149,10 @@ public class TSPProblem
 			ParentSelectionMethod pmeth,
 			SurvivorSelectionMethod smeth)
 	{
-		runTests(xop, mop, pmeth, smeth, 20, 20000, 5);
-		runTests(xop, mop, pmeth, smeth, 50, 20000, 5);
-		runTests(xop, mop, pmeth, smeth, 100, 20000, 5);
-		runTests(xop, mop, pmeth, smeth, 2000, 20000, 5);
+		runTests(xop, mop, pmeth, smeth, 20, 20000, 3);
+		runTests(xop, mop, pmeth, smeth, 50, 20000, 3);
+		runTests(xop, mop, pmeth, smeth, 100, 20000, 3);
+		runTests(xop, mop, pmeth, smeth, 2000, 20000, 3);
 	}
 	
 	private static void runTests(
