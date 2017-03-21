@@ -53,7 +53,7 @@ public class City implements Symbol
 		// Some ol' school a^2 + b^2 == c^2. 
 		long xDistance = Math.abs(_x - city._x);
 		long yDistance = Math.abs(_y - city._y);
-		double distance = Math.sqrt(xDistance*xDistance + yDistance*yDistance);
+		double distance = Math.round(Math.sqrt(xDistance*xDistance + yDistance*yDistance));
 		
 		_distanceCache.put(city, distance);
 		
