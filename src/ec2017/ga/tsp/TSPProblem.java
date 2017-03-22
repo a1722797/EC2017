@@ -56,10 +56,10 @@ public class TSPProblem
 			new ElistmBothSurvivorSelectionMethod());
 		
 		Algorithm inverOver = new Algorithm(
-				null,
-				new InverOverOp(),
-				new InverOverParentSelectionMethod(),
-				new InverOverSurvivorSelectionMethod());
+			null,
+			new InverOverOp(),
+			new InverOverParentSelectionMethod(),
+			new InverOverSurvivorSelectionMethod());
 				
 		runBenchMarks(algorithmA, algorithmB, algorithmC);
 		testIndividual(algorithmB);
@@ -80,8 +80,6 @@ public class TSPProblem
 	
 	private static void runBenchMarks(Algorithm ... algorithms)
 	{
-		       
-		
 		for (Algorithm algorithm : algorithms)
 		{
 			Runnable runnable = new Runnable()
@@ -206,8 +204,6 @@ public class TSPProblem
 					InverOverOp iop = (InverOverOp)algorithm.getMutate();
 					iop.setPopulation(population);
 				}
-//				population.setCrossOverProbability(0.25);
-//				population.setMutationProbability(0.75);
 				
 				generationLog.append(inFile.getName());
 				generationLog.append(',');
@@ -278,8 +274,12 @@ public class TSPProblem
 		{
 			StringBuilder fileName = new StringBuilder();
 			fileName.append(algorithm.toString());
-			fileName.append("pop_");
+			fileName.append(",pop_");
 			fileName.append(populationSize);
+			fileName.append(",gen_");
+			fileName.append(generations);
+			fileName.append(",runs_");
+			fileName.append(runs);
 			
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("output/" + fileName.toString() + ".txt")));
 			bw.write(resultsLog.toString());
