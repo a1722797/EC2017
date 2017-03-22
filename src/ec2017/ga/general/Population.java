@@ -14,36 +14,23 @@ public class Population
 {
 	protected ArrayList<Symbol> _symbols;
 	protected int _populationSize;
-	protected CrossOverOperator _crossOverOp = null;
-	protected MutateOperator _mutateOp = null;
-	protected ParentSelectionMethod _parentSelect;
-	protected SurvivorSelectionMethod _survivorSelect;
-	double _pMutate = 1;
-	double _pXover = 1;
+	private Algorithm _algorithm;
 	
 	ArrayList<Individual> _population = new ArrayList<Individual>();
 
 	/**
-	 * This is package protected since it should only be used by the PopulationFactory.
-	 * @param symbols Our symbol set
-	 * @param populationSize Expected size of the population
-	 * @param crossOverOp Cross over operation
-	 * @param mutateOperator Mutate operation
-	 * @param parentSelect Parent selection method
-	 * @param survivorSelect Survivor selection method
-	 * @param populationSeed We require an instance of an individual to create new instances. This mother is used to bootstrap the initial population.
+	 * 
+	 * @param symbols
+	 * @param populationSize
+	 * @param populationSeed
+	 * @param algorithm
 	 */
-	Population(
-			ArrayList<Symbol> symbols, int populationSize, CrossOverOperator crossOverOp,
-			MutateOperator mutateOperator, ParentSelectionMethod parentSelect, SurvivorSelectionMethod survivorSelect,
-			Individual populationSeed)
+	public Population(
+			ArrayList<Symbol> symbols, int populationSize, Individual populationSeed, Algorithm algorithm)
 	{
 		_symbols = symbols;
 		_populationSize = populationSize;
-		_crossOverOp = crossOverOp;
-		_mutateOp = mutateOperator;
-		_parentSelect = parentSelect;
-		_survivorSelect = survivorSelect;
+		_algorithm = algorithm;
 		
 		generatePopulation(populationSeed);
 	}
@@ -69,7 +56,7 @@ public class Population
 	public void evolve() 
 	{
 		// First, we're going to use our parent selection method to creat a mating pool
-		ArrayList<Individual> matingPool = _parentSelect.select(_population);
+		ArrayList<Individual> matingPool = _algorithm.getParentSelect().select(_population);
 		ArrayList<Individual> newGeneration;
 		
 		// We want to populate a new generation, if we have a cross over operation we'll
@@ -82,28 +69,29 @@ public class Population
 		Iterator<Individual> it = shuffledMatingPool.iterator();
 		for(Individual parent : matingPool)
 		{
-			Boolean mutate = Math.random() <= _pMutate;
-			Boolean xover = Math.random() <= _pXover;
+			Boolean mutate = Math.random() <= _algorithm.getPMutate();
+			Boolean xover = Math.random() <= _algorithm.getPXOver();
 			
-			if(_crossOverOp != null && xover)
+			if(_algorithm.getCrossOver() != null && xover)
 			{
 				// Sometimes parentA may be parentB, but this maintains ordering, making the InterOverOp easier.
 				Individual parentB = it.next();
-				ArrayList<Individual> children = parent.crossOver(parentB, _crossOverOp);
+				ArrayList<Individual> children = parent.crossOver(parentB, _algorithm.getCrossOver());
 				for (Individual child : children) newGeneration.add(child);
 			}
 			
 			// If we have a mutation operation, we're going to use it here.
-			if (_mutateOp != null && mutate)
+			if (_algorithm.getMutate() != null && mutate)
 			{
-				newGeneration.add(parent.mutate(_mutateOp));
+				newGeneration.add(parent.mutate(_algorithm.getMutate()));
 			}
 			
 			if (!xover)it.next();
 		}
 		
 		// And we work out who survives using our survivor selection method.
-		ArrayList<Individual> newPopulation = _survivorSelect.select(matingPool, newGeneration, _populationSize);
+		ArrayList<Individual> newPopulation = 
+			_algorithm.getSurvivorSelect().select(matingPool, newGeneration, _populationSize);
 		
 		// Certain combinations might give us less survivors than we need, so we'll complain.
 		if(newPopulation.size() != _populationSize)
@@ -129,15 +117,5 @@ public class Population
 	{
 		Random rand = new Random();
 		return _population.get(rand.nextInt(_population.size()));
-	}
-	
-	public void setMutationProbability(double pVal)
-	{
-		_pMutate = pVal;
-	}
-	
-	public void setCrossOverProbability(double pVal)
-	{
-		_pXover = pVal;
 	}
 }

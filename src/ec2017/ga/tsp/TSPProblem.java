@@ -12,15 +12,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import ec2017.ga.general.CrossOverOperator;
-import ec2017.ga.general.MutateOperator;
-import ec2017.ga.general.ParentSelectionMethod;
+import ec2017.ga.general.Algorithm;
 import ec2017.ga.general.Population;
-import ec2017.ga.general.PopulationFactory;
-import ec2017.ga.general.SurvivorSelectionMethod;
 import ec2017.ga.general.Symbol;
 import ec2017.ga.general.selection.WindowingFPSParentSelectionMethod;
 import ec2017.ga.general.selection.ElistmBothSurvivorSelectionMethod;
+import ec2017.ga.general.selection.InverOverParentSelectionMethod;
+import ec2017.ga.general.selection.InverOverSurvivorSelectionMethod;
 import ec2017.ga.general.selection.RoundRobinSurvivorSelectionMethod;
 import ec2017.ga.general.variation.CrossOverCycle;
 import ec2017.ga.general.variation.CrossOverPMX;
@@ -34,68 +32,83 @@ import ec2017.ga.general.variation.MutateInversion;
  */
 public class TSPProblem
 {
+	// Setup our thread pool.
+	static ExecutorService _executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+	
 	public static void main(String[] args) 
 	{
-		runBenchMarks();
-	}
-	
-	private static void runBenchMarks()
-	{
-		ExecutorService executor = Executors.newFixedThreadPool(3);       
-        
-		Runnable algA = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				benchMark(
-					new CrossOverPMX(),
-					new MutateInversion(),
-					new WindowingFPSParentSelectionMethod(),
-					new RoundRobinSurvivorSelectionMethod(10));
-			}
-		};
+		Algorithm algorithmA = new Algorithm(
+			new CrossOverPMX(),
+			new MutateInversion(),
+			new WindowingFPSParentSelectionMethod(),
+			new RoundRobinSurvivorSelectionMethod(10));
 		
-		Runnable algB = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				benchMark(
-					new CrossOverCycle(),
-					new MutateInversion(),
-					new WindowingFPSParentSelectionMethod(),
-					new ElistmBothSurvivorSelectionMethod());
-			}
-		};
+		Algorithm algorithmB = new Algorithm(
+			new CrossOverCycle(),
+			new MutateInversion(),
+			new WindowingFPSParentSelectionMethod(),
+			new ElistmBothSurvivorSelectionMethod());
 		
-		Runnable algC = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				benchMark(
-					new CrossOverPMX(),
-					new MutateInversion(),
-					new WindowingFPSParentSelectionMethod(),
-					new ElistmBothSurvivorSelectionMethod());
-			}
-		};
+		Algorithm algorithmC = new Algorithm(
+			new CrossOverPMX(),
+			new MutateInversion(),
+			new WindowingFPSParentSelectionMethod(),
+			new ElistmBothSurvivorSelectionMethod());
 		
-		executor.execute(algA);
-		executor.execute(algB);
-		executor.execute(algC);
-        executor.shutdown();     
+		Algorithm inverOver = new Algorithm(
+				null,
+				new InverOverOp(),
+				new InverOverParentSelectionMethod(),
+				new InverOverSurvivorSelectionMethod());
+				
+		runBenchMarks(algorithmA, algorithmB, algorithmC);
+		testIndividual(algorithmB);
+		testIndividual(inverOver);
+		
+        _executor.shutdown();     
         try 
         {
-			executor.awaitTermination(72, TimeUnit.HOURS);
+			_executor.awaitTermination(72, TimeUnit.HOURS);
 		} 
         catch (InterruptedException e) 
         {
 			e.printStackTrace();
 		}
         System.out.println("************* Done *************");
-
+		
+	}
+	
+	private static void runBenchMarks(Algorithm ... algorithms)
+	{
+		       
+		
+		for (Algorithm algorithm : algorithms)
+		{
+			Runnable runnable = new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					benchMark(algorithm);
+				}
+			};
+			
+			_executor.execute(runnable);
+		}
+	}
+	
+	private static void testIndividual(Algorithm algorithm)
+	{
+		Runnable runnable = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				runTests(algorithm, 50, 10000, 30);
+			}
+		};
+		
+		_executor.execute(runnable);
 	}
 	
 	/**
@@ -143,23 +156,16 @@ public class TSPProblem
 		return cities;
 	}
 	
-	private static void benchMark(
-			CrossOverOperator xop,
-			MutateOperator mop,
-			ParentSelectionMethod pmeth,
-			SurvivorSelectionMethod smeth)
+	private static void benchMark(Algorithm algorithm)
 	{
-		runTests(xop, mop, pmeth, smeth, 20, 20000, 3);
-		runTests(xop, mop, pmeth, smeth, 50, 20000, 3);
-		runTests(xop, mop, pmeth, smeth, 100, 20000, 3);
-		runTests(xop, mop, pmeth, smeth, 200, 20000, 3);
+		runTests(algorithm, 20, 20000, 5);
+		runTests(algorithm, 50, 20000, 5);
+		runTests(algorithm, 100, 20000, 5);
+		runTests(algorithm, 200, 20000, 5);
 	}
 	
 	private static void runTests(
-			CrossOverOperator xop,
-			MutateOperator mop,
-			ParentSelectionMethod pmeth,
-			SurvivorSelectionMethod smeth,
+			Algorithm algorithm,
 			int populationSize,
 			int generations,
 			int runs)
@@ -189,24 +195,15 @@ public class TSPProblem
 			for (int i = 0; i < runs; i++)
 			{
 				long starttime = System.currentTimeMillis();
-				// Here we're using a factory to create a population
-				// which evolves according to the operations and 
-				// selection methods we want to use in this algorithm.
-				PopulationFactory pf = new PopulationFactory();
-				pf.setSymbols(cities);
-				pf.setPopulationSize(populationSize);
-				pf.setCrossOverOperator(xop);
-				pf.setMutateOperator(mop);
-				pf.setParentSelectionMethod(pmeth);
-				pf.setSurvivorSelectionMethod(smeth);
-				
-				Population population = pf.createPopulation(new Path());
+
+				Population population =
+					new Population(cities, populationSize, new Path(), algorithm);
 				
 				// The InverOverOp needs a reference to the population,
 				// obviously we need to wait till we have a population.
-				if (InverOverOp.class.isAssignableFrom(mop.getClass()))
+				if (InverOverOp.class.isAssignableFrom(algorithm.getMutate().getClass()))
 				{
-					InverOverOp iop = (InverOverOp)mop;
+					InverOverOp iop = (InverOverOp)algorithm.getMutate();
 					iop.setPopulation(population);
 				}
 //				population.setCrossOverProbability(0.25);
@@ -242,7 +239,7 @@ public class TSPProblem
 				resultsLog.append(',');
 				
 				long endtime = System.currentTimeMillis();
-				System.out.println("Run [" + i + "] -- " + ((endtime-starttime)/1000.0) + " seconds");
+				System.out.println(inFile.getName() + "-- run [" + i + "] -- " + ((endtime-starttime)/1000.0) + " seconds -- " + algorithm.toString());
 			}
 			
 			double mean = total / runs;
@@ -272,7 +269,7 @@ public class TSPProblem
 			resultsLog.append(System.lineSeparator());
 			
 			System.out.println(inFile.getPath());
-			System.out.println("Mean: " + mean + '\n');
+			System.out.println(inFile.getPath() + " :: " + algorithm.toString() + " mean: " + mean + '\n');
 		}
 		
 		System.out.println(resultsLog.toString());
@@ -280,15 +277,7 @@ public class TSPProblem
 		try
 		{
 			StringBuilder fileName = new StringBuilder();
-			if (xop != null)fileName.append(xop.getClass().getSimpleName());
-			else fileName.append("none");
-			fileName.append('-');
-			if (mop != null)fileName.append(mop.getClass().getSimpleName());
-			else fileName.append("none");
-			fileName.append('-');
-			fileName.append(pmeth.getClass().getSimpleName());
-			fileName.append('-');
-			fileName.append(smeth.getClass().getSimpleName());
+			fileName.append(algorithm.toString());
 			fileName.append("pop_");
 			fileName.append(populationSize);
 			
