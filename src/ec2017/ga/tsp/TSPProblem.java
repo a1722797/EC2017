@@ -206,6 +206,7 @@ public class TSPProblem
 					InverOverOp iop = (InverOverOp)algorithm.getMutate();
 					iop.setPopulation(population);
 				}
+				
 //				population.setCrossOverProbability(0.25);
 //				population.setMutationProbability(0.75);
 				
@@ -278,8 +279,12 @@ public class TSPProblem
 		{
 			StringBuilder fileName = new StringBuilder();
 			fileName.append(algorithm.toString());
-			fileName.append("pop_");
+			fileName.append(",pop_");
 			fileName.append(populationSize);
+			fileName.append(",gen_");
+			fileName.append(generations);
+			fileName.append(",runs_");
+			fileName.append(runs);
 			
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("output/" + fileName.toString() + ".txt")));
 			bw.write(resultsLog.toString());
