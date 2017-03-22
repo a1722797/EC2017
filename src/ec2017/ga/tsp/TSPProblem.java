@@ -152,7 +152,7 @@ public class TSPProblem
 		runTests(xop, mop, pmeth, smeth, 20, 20000, 3);
 		runTests(xop, mop, pmeth, smeth, 50, 20000, 3);
 		runTests(xop, mop, pmeth, smeth, 100, 20000, 3);
-		runTests(xop, mop, pmeth, smeth, 2000, 20000, 3);
+		runTests(xop, mop, pmeth, smeth, 200, 20000, 3);
 	}
 	
 	private static void runTests(
