@@ -1,0 +1,33 @@
+****************
+* Benchmarking *
+****************
+
+
+*************************
+* Testing our algorithm *
+*************************
+
+**************
+* Inver-Over *
+**************
+The original implementation of the Inver-Over operator uses an exit condition which involves repeating genotypes, and doesn’t use generations in the traditional sense, since each offspring is returned to the population immediately.
+
+Since the assignment asks us to run the Inver-Over tests for a fixed number of generations, we slightly modified the algorithm to fit into a more general genetic algorithm by creating a new generation from all the offspring for the population then selecting as normal, using an old to new comparison.
+
+Results for 30 runs with population 50 and 10,000 generations:
+
+Input			Optimal	Mean Distance	Std Deviation
+_____________________________________________________________
+eil101.tsp		629		643.57		3.04
+eil51.tsp		426		427.30		1.07
+eil76.tsp		538		545.93		3.27
+kroA100.tsp		21282		21502.50		120.12
+kroC100.tsp		20749		20991.83		132.45
+kroD100.tsp		21294		21638.66		154.05
+lin105.tsp		14379		14589.76		102.37
+pcb442.tsp		50778		180976.16		2401.45
+pr2392.tsp		378032	8968512.4		37626.78
+st70.tsp		675		679.30		2.40
+
+The Inver-Over method is an effective way of finding an optimal, or close to optimal route, particularly over smaller datasets.
+However, its slower convergence means that it will require many more generations to find an optimal route on our larger datasets.
