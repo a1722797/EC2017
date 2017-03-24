@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import ec2017.ga.general.CrossOverOperator;
 import ec2017.ga.general.Symbol;
@@ -13,10 +15,10 @@ public class CrossOverPMX implements CrossOverOperator {
     crossOver(ArrayList<Symbol> parentA,
               ArrayList<Symbol> parentB)
     {
-        ArrayList<ArrayList<Symbol>> result = new ArrayList();
-        
-        ArrayList<Symbol> childA = new ArrayList();
-        ArrayList<Symbol> childB = new ArrayList();
+        ArrayList<ArrayList<Symbol>> result = new ArrayList<>(2);
+
+        ArrayList<Symbol> childA = new ArrayList<>(parentA.size());
+        ArrayList<Symbol> childB = new ArrayList<>(parentA.size());
 
         result.add(childA);
         result.add(childB);
@@ -38,27 +40,36 @@ public class CrossOverPMX implements CrossOverOperator {
 
         Collections.copy(childA.subList(cutStart,cutEnd+1), subA);
         Collections.copy(childB.subList(cutStart,cutEnd+1), subB);
-        
+
         mapRemainder(parentB, childA, cutStart);
         mapRemainder(parentA, childB, cutStart);
-        
+
         return result;
     }
 
     private void mapRemainder(List<Symbol> parent, List<Symbol> child, int start) {
-        for (int i = start; child.contains(null); i = (i+1)%child.size())
+    	HashSet<Symbol> childContains = new HashSet<>(child);
+    	childContains.remove(null); // Don't count the absence of a Symbol
+    	HashMap<Symbol, Integer> parentIndex = new HashMap<>(parent.size());
+
+    	for (int i = 0; i < parent.size(); i++) {
+    		parentIndex.put(parent.get(i), i);
+    	}
+
+        for (int i = start; childContains.size() != child.size(); i = (i+1)%child.size())
         {
             Symbol toPlace = parent.get(i);
-            if (child.contains(toPlace)) {
+            if (childContains.contains(toPlace)) {
                 continue;
             }
 
             int toPlaceIndex = i;
             while (child.get(toPlaceIndex) != null) {
                 Symbol tracking = child.get(toPlaceIndex);
-                toPlaceIndex = parent.indexOf(tracking);
+                toPlaceIndex = parentIndex.get(tracking);
             }
             child.set(toPlaceIndex, toPlace);
+            childContains.add(toPlace);
         }
     }
 }

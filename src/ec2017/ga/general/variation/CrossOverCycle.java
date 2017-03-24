@@ -12,10 +12,10 @@ public class CrossOverCycle implements CrossOverOperator {
     crossOver(ArrayList<Symbol> parentA,
               ArrayList<Symbol> parentB)
     {
-        ArrayList<ArrayList<Symbol>> result = new ArrayList();
+        ArrayList<ArrayList<Symbol>> result = new ArrayList<>(2);
 
-        ArrayList<Symbol> childA = new ArrayList();
-        ArrayList<Symbol> childB = new ArrayList();
+        ArrayList<Symbol> childA = new ArrayList<>(parentA.size());
+        ArrayList<Symbol> childB = new ArrayList<>(parentA.size());
 
         result.add(childA);
         result.add(childB);
@@ -27,21 +27,21 @@ public class CrossOverCycle implements CrossOverOperator {
 
         // For efficiency, create a map from Symbols to their index in
         // parentA
-        HashMap<Symbol, Integer> indexMap = new HashMap();
+        HashMap<Symbol, Integer> indexMap = new HashMap<>(parentA.size());
         for (int i = 0; i < parentA.size(); i++) {
         	indexMap.put(parentA.get(i), i);
         }
 
 
-        ArrayList<ArrayList<Integer>> cycleList = new ArrayList();
-        HashSet<Integer> usedInCycle = new HashSet();
+        ArrayList<ArrayList<Integer>> cycleList = new ArrayList<>(parentA.size());
+        HashSet<Integer> usedInCycle = new HashSet<>(parentA.size());
 
         for (int i = 0; i < parentA.size(); i++) {
             if (usedInCycle.contains(i)) {
                 continue;
             }
 
-            ArrayList<Integer> newCycle = new ArrayList();
+            ArrayList<Integer> newCycle = new ArrayList<>(parentA.size() - usedInCycle.size());
             int head = i;
             while (!usedInCycle.contains(head)) {
                 usedInCycle.add(head);

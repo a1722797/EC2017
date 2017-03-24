@@ -3,8 +3,8 @@ package ec2017.ga.general.variation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
-import java.util.Collections;
 
 import ec2017.ga.general.CrossOverOperator;
 import ec2017.ga.general.Symbol;
@@ -16,64 +16,78 @@ public class CrossOverEdgeRecomb implements CrossOverOperator {
     {
         int size = parentA.size();
 
-        ArrayList<ArrayList<Symbol>> result = new ArrayList();
-        ArrayList<Symbol> child = new ArrayList();
+        ArrayList<ArrayList<Symbol>> result = new ArrayList<>(1);
+        ArrayList<Symbol> child = new ArrayList<>(size);
         result.add(child);
 
-        HashMap<Symbol, ArrayList<Symbol>> edgeTable = new HashMap();
+        HashMap<Symbol, ArrayList<Symbol>> edgeTable = new HashMap<>(size);
+        HashMap<Symbol, HashSet<Symbol>> reverseTable = new HashMap<>(size);
 
         for (int i = 0; i < size; i++) {
             Symbol symA = parentA.get(i);
             Symbol symB = parentB.get(i);
 
-            ArrayList<Symbol> edgesA = edgeTable.computeIfAbsent(symA, (s) -> new ArrayList());
-            ArrayList<Symbol> edgesB = edgeTable.computeIfAbsent(symB, (s) -> new ArrayList());
+            ArrayList<Symbol> edgesA = edgeTable.computeIfAbsent(symA, (s) -> new ArrayList<>(4));
+            ArrayList<Symbol> edgesB = edgeTable.computeIfAbsent(symB, (s) -> new ArrayList<>(4));
 
-            edgesA.add(parentA.get((i+1) % size));
-            edgesA.add(parentA.get((i+(size-1)) % size));
+            Symbol symAnext = parentA.get((i+1) % size);
+            Symbol symAprev = parentA.get((i+(size-1)) % size);
+            edgesA.add(symAnext);
+            edgesA.add(symAprev);
 
-            edgesB.add(parentB.get((i+1) % size));
-            edgesB.add(parentB.get((i+(size-1)) % size));
+            Symbol symBnext = parentB.get((i+1) % size);
+            Symbol symBprev = parentB.get((i+(size-1)) % size);
+            edgesB.add(symBnext);
+            edgesB.add(symBprev);
+
+            reverseTable.computeIfAbsent(symAnext, (s) -> new HashSet<>(4)).add(symA);
+            reverseTable.computeIfAbsent(symAprev, (s) -> new HashSet<>(4)).add(symA);
+            reverseTable.computeIfAbsent(symBnext, (s) -> new HashSet<>(4)).add(symB);
+            reverseTable.computeIfAbsent(symBprev, (s) -> new HashSet<>(4)).add(symB);
         }
 
-        ArrayList<Symbol> symbols = new ArrayList(edgeTable.keySet());
-        Collections.shuffle(symbols);
-        Symbol current = symbols.get(0);
+        Random rng = new Random();
+        Symbol current = parentA.get(rng.nextInt(size));
+        child.add(current);
 
-        while (child.size() < parentA.size()) {
-            child.add(current);
+        while (child.size() < size) {
+        	ArrayList<Symbol> choices = edgeTable.remove(current);
 
             // Remove current symbol from edge table
-            for (Symbol key : edgeTable.keySet()) {
-                while (edgeTable.get(key).remove(current)) {
-                }
+        	for (Symbol key : reverseTable.get(current)) {
+        		Iterator<Symbol> it = edgeTable.get(key).iterator();
+        		while (it.hasNext()) {
+        			if (it.next().equals(current)) {
+        				it.remove();
+        			}
+        		}
             }
 
-            Symbol next = pickNext(edgeTable, current);
-            edgeTable.remove(current);
+        	for (Symbol key : choices) {
+        		reverseTable.get(key).remove(current);
+        	}
+
+            Symbol next = pickNext(edgeTable, choices, rng);
             current = next;
+
+            child.add(current);
         }
 
-        ArrayList<ArrayList<Symbol>> ret = new ArrayList();
-        ret.add(child);
-        return ret;
+        return result;
     }
 
     private Symbol pickNext(HashMap<Symbol, ArrayList<Symbol>> edgeTable,
-                            Symbol current)
+    						ArrayList<Symbol> choices, Random rng)
     {
-        ArrayList<Symbol> choices = edgeTable.get(current);
-
         // On an empty list, pick the next element at random
         if (choices.size() == 0) {
-            choices = new ArrayList(edgeTable.keySet());
-            Collections.shuffle(choices);
-            return choices.get(0);
+            choices = new ArrayList<>(edgeTable.keySet());
+            return choices.get(rng.nextInt(choices.size()));
         }
 
         // Find all the common edges
-        HashSet<Symbol> duplicates = new HashSet();
-        HashSet<Symbol> choicesSet = new HashSet();
+        HashSet<Symbol> duplicates = new HashSet<>(4);
+        HashSet<Symbol> choicesSet = new HashSet<>(4);
         for (Symbol s : choices) {
             if (!choicesSet.add(s)) {
                 duplicates.add(s);
@@ -82,11 +96,11 @@ public class CrossOverEdgeRecomb implements CrossOverOperator {
 
         // If there are common edges, restrict choices to them
         if (duplicates.size() > 0) {
-            choices = new ArrayList(duplicates);
+            choices = new ArrayList<>(duplicates);
         }
 
         // Remove the choices that don't have the shortest list
-        ArrayList<Symbol> best = new ArrayList();
+        ArrayList<Symbol> best = new ArrayList<>(4);
         int bestLen = Integer.MAX_VALUE;
         for (Symbol choice : choices) {
             if (edgeTable.get(choice).size() < bestLen) {
@@ -98,7 +112,6 @@ public class CrossOverEdgeRecomb implements CrossOverOperator {
         }
 
         // Pick at random from what's left
-        Collections.shuffle(choices);
-        return choices.get(0);
+        return choices.get(rng.nextInt(choices.size()));
     }
 }

@@ -1,9 +1,9 @@
 package ec2017.ga.general.variation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Collections;
 
 import ec2017.ga.general.CrossOverOperator;
 import ec2017.ga.general.Symbol;
@@ -13,10 +13,10 @@ public class CrossOverOrder implements CrossOverOperator {
     crossOver(ArrayList<Symbol> parentA,
               ArrayList<Symbol> parentB)
     {
-        ArrayList<ArrayList<Symbol>> result = new ArrayList();
-        
-        ArrayList<Symbol> childA = new ArrayList();
-        ArrayList<Symbol> childB = new ArrayList();
+        ArrayList<ArrayList<Symbol>> result = new ArrayList<>(2);
+
+        ArrayList<Symbol> childA = new ArrayList<>(parentA.size());
+        ArrayList<Symbol> childB = new ArrayList<>(parentA.size());
 
         result.add(childA);
         result.add(childB);
@@ -36,10 +36,10 @@ public class CrossOverOrder implements CrossOverOperator {
 
         // Get the rest of the elements, ordered as they are in the
         // other parent
-        List<Symbol> restA = new ArrayList(parentA);
-        List<Symbol> restB = new ArrayList(parentB);
-        restA.removeAll(subB);
-        restB.removeAll(subA);
+        List<Symbol> restA = new ArrayList<>(parentA);
+        List<Symbol> restB = new ArrayList<>(parentB);
+        restA.removeAll(new HashSet<>(subB)); // Converting the subsections into HashSets speeds this
+        restB.removeAll(new HashSet<>(subA)); // up by a lot, presumably because of O(1) membership checking
 
         // Copy everything into the children
         childA.addAll(restB.subList(0, cutStart));
