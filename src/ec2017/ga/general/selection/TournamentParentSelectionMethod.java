@@ -1,6 +1,5 @@
 package ec2017.ga.general.selection;
 
-import ec2017.ga.tsp.Path;
 import ec2017.ga.general.Individual;
 import ec2017.ga.general.ParentSelectionMethod;
 
@@ -11,7 +10,7 @@ import java.util.ArrayList;
  */
 public class TournamentParentSelectionMethod implements ParentSelectionMethod {
     public int _k = 5;     //choose k individuals randomly
-    public double _pro = 1.0;   //the probablity of fittest individual choosen
+    public double _pro = 1.0;   //the probability of fittest individual chosen
 
     public TournamentParentSelectionMethod(int k){
         _k = k;

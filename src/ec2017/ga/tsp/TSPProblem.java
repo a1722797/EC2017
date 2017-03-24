@@ -15,15 +15,8 @@ import java.util.concurrent.TimeUnit;
 import ec2017.ga.general.Algorithm;
 import ec2017.ga.general.Population;
 import ec2017.ga.general.Symbol;
-import ec2017.ga.general.selection.WindowingFPSParentSelectionMethod;
-import ec2017.ga.general.selection.ElistmBothSurvivorSelectionMethod;
-import ec2017.ga.general.selection.InverOverParentSelectionMethod;
-import ec2017.ga.general.selection.InverOverSurvivorSelectionMethod;
-import ec2017.ga.general.selection.RoundRobinSurvivorSelectionMethod;
-import ec2017.ga.general.variation.CrossOverCycle;
-import ec2017.ga.general.variation.CrossOverPMX;
-import ec2017.ga.general.variation.InverOverOp;
-import ec2017.ga.general.variation.MutateInversion;
+import ec2017.ga.general.selection.*;
+import ec2017.ga.general.variation.*;
 
 /**
  * The main entry point for our program.
@@ -34,50 +27,50 @@ public class TSPProblem
 {
 	// Setup our thread pool.
 	static ExecutorService _executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-	
-	public static void main(String[] args) 
+
+	public static void main(String[] args)
 	{
 		Algorithm algorithmA = new Algorithm(
 			new CrossOverPMX(),
 			new MutateInversion(),
 			new WindowingFPSParentSelectionMethod(),
 			new RoundRobinSurvivorSelectionMethod(10));
-		
+
 		Algorithm algorithmB = new Algorithm(
 			new CrossOverCycle(),
 			new MutateInversion(),
 			new WindowingFPSParentSelectionMethod(),
 			new ElistmBothSurvivorSelectionMethod());
-		
+
 		Algorithm algorithmC = new Algorithm(
 			new CrossOverPMX(),
 			new MutateInversion(),
 			new WindowingFPSParentSelectionMethod(),
 			new ElistmBothSurvivorSelectionMethod());
-		
+
 		Algorithm inverOver = new Algorithm(
 			null,
 			new InverOverOp(),
 			new InverOverParentSelectionMethod(),
 			new InverOverSurvivorSelectionMethod());
-				
+
 		runBenchMarks(algorithmA, algorithmB, algorithmC);
 		testIndividual(algorithmB);
 		testIndividual(inverOver);
-		
-        _executor.shutdown();     
-        try 
+
+        _executor.shutdown();
+        try
         {
 			_executor.awaitTermination(72, TimeUnit.HOURS);
-		} 
-        catch (InterruptedException e) 
+		}
+        catch (InterruptedException e)
         {
 			e.printStackTrace();
 		}
         System.out.println("************* Done *************");
-		
+
 	}
-	
+
 	private static void runBenchMarks(Algorithm ... algorithms)
 	{
 		for (Algorithm algorithm : algorithms)
@@ -90,11 +83,11 @@ public class TSPProblem
 					benchMark(algorithm);
 				}
 			};
-			
+
 			_executor.execute(runnable);
 		}
 	}
-	
+
 	private static void testIndividual(Algorithm algorithm)
 	{
 		Runnable runnable = new Runnable()
@@ -105,10 +98,10 @@ public class TSPProblem
 				runTests(algorithm, 50, 10000, 30);
 			}
 		};
-		
+
 		_executor.execute(runnable);
 	}
-	
+
 	/**
 	 * Reads our list of cities from a given file.
 	 * @param filename The location of the file
@@ -119,7 +112,7 @@ public class TSPProblem
 		// Note : use SymCity to create instance for better speed.
 		//        only works on symetric datasets.
 		ArrayList<Symbol> cities = new ArrayList<Symbol>();
-	
+
 		File file = new File (filename);
 		//File file = new File ("TSP_data/pr2392.tsp");
 		BufferedReader reader = null;
@@ -134,7 +127,7 @@ public class TSPProblem
 					//since there are some decimal numbers, changes are needed
 					BigDecimal city_bdx = new BigDecimal(tempCity[1]);
 					BigDecimal city_bdy = new BigDecimal(tempCity[2]);
-					cities.add(new SymCity(tempCity[0], city_bdx.intValue(), city_bdy.intValue()));   				
+					cities.add(new SymCity(tempCity[0], city_bdx.intValue(), city_bdy.intValue()));
 				}
 				line++;
 			}
@@ -146,14 +139,14 @@ public class TSPProblem
 				try {
 					reader.close();
 				} catch (IOException e1) {
-					
+
 				}
 			}
 		}
 
 		return cities;
 	}
-	
+
 	private static void benchMark(Algorithm algorithm)
 	{
 		runTests(algorithm, 20, 20000, 5);
@@ -161,16 +154,16 @@ public class TSPProblem
 		runTests(algorithm, 100, 20000, 5);
 		runTests(algorithm, 200, 20000, 5);
 	}
-	
+
 	private static void runTests(
 			Algorithm algorithm,
 			int populationSize,
 			int generations,
 			int runs)
-	{		
+	{
 		StringBuilder resultsLog = new StringBuilder();
 		StringBuilder generationLog = new StringBuilder();
-		
+
 		File inputFolder = new File("TSP_data");
 		for(File inFile : inputFolder.listFiles())
 		{
@@ -181,11 +174,11 @@ public class TSPProblem
 			resultsLog.append(System.lineSeparator());
 
 			System.out.println("Reading..." + inFile.getName());
-			
+
 			double total = 0;
 			double shortest = Double.MAX_VALUE;
 			Path optimal = null;
-			
+
 			ArrayList<Symbol> cities = readCitiesFromFile(inFile.getPath());
 
 			double[] values = new double[runs];
@@ -196,7 +189,7 @@ public class TSPProblem
 
 				Population population =
 					new Population(cities, populationSize, new Path(), algorithm);
-				
+
 				// The InverOverOp needs a reference to the population,
 				// obviously we need to wait till we have a population.
 				if (InverOverOp.class.isAssignableFrom(algorithm.getMutate().getClass()))
@@ -204,10 +197,10 @@ public class TSPProblem
 					InverOverOp iop = (InverOverOp)algorithm.getMutate();
 					iop.setPopulation(population);
 				}
-				
+
 				generationLog.append(inFile.getName());
 				generationLog.append(',');
-				
+
 				// Do our evolution
 				for (int j = 0; j < generations; j++)
 				{
@@ -219,27 +212,27 @@ public class TSPProblem
 						generationLog.append(',');
 					}
 				}
-				
+
 				generationLog.append(System.lineSeparator());
-				
+
 				Path bestPath = (Path)population.getFittest();
 				if(bestPath.getDistance() < shortest)
 				{
 					optimal = bestPath;
 					shortest = bestPath.getDistance();
 				}
-				
+
 				total += bestPath.getDistance();
 				values[i] = bestPath.getDistance();
 				resultsLog.append(bestPath.getDistance());
 				resultsLog.append(',');
-				
+
 				long endtime = System.currentTimeMillis();
 				System.out.println(inFile.getName() + "-- run [" + i + "] -- " + ((endtime-starttime)/1000.0) + " seconds -- " + algorithm.toString());
 			}
-			
+
 			double mean = total / runs;
-			
+
 			// Work out standard deviation.
 			double stdDev = 0;
 			for(int k = 0; k < values.length; k++)
@@ -250,7 +243,7 @@ public class TSPProblem
 			}
 			stdDev /= runs;
 			stdDev = Math.sqrt(stdDev);
-			
+
 			resultsLog.append(System.lineSeparator());
 			resultsLog.append("Mean cost: ");
 			resultsLog.append(mean);
@@ -263,13 +256,13 @@ public class TSPProblem
 			resultsLog.append(optimal.toString());
 			resultsLog.append(System.lineSeparator());
 			resultsLog.append(System.lineSeparator());
-			
+
 			System.out.println(inFile.getPath());
 			System.out.println(inFile.getPath() + " :: " + algorithm.toString() + " mean: " + mean + '\n');
 		}
-		
+
 		System.out.println(resultsLog.toString());
-		
+
 		try
 		{
 			StringBuilder fileName = new StringBuilder();
@@ -280,21 +273,21 @@ public class TSPProblem
 			fileName.append(generations);
 			fileName.append(",runs_");
 			fileName.append(runs);
-			
+
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("output/" + fileName.toString() + ".txt")));
 			bw.write(resultsLog.toString());
 			bw.close();
-			
+
 			bw = new BufferedWriter(new FileWriter(new File("output/" + fileName.toString()+ "-generations.csv")));
 			bw.write(generationLog.toString());
 			bw.close();
 		}
-		catch (IOException e) 
+		catch (IOException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }

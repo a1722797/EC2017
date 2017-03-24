@@ -10,7 +10,7 @@ import ec2017.ga.general.Symbol;
 /**
  * The InterOverOp is an implementation of the Inter-Over Operator for the TSP
  * <https://cs.adelaide.edu.au/~zbyszek/Papers/p44.pdf>
- * 
+ *
  * While the Inter-Over operator is conceptually closer to a cross-over operation than
  * a mutation operation, we're using the MutateOperator since the interface is more
  * convenient for the work-flow.
@@ -21,20 +21,20 @@ public class InverOverOp implements MutateOperator
 {
 	private double _p = 0.02; // The probability of a new edge being added.
 	private Population _population;
-	
+
 	@Override
 	public ArrayList<Symbol> mutate(ArrayList<Symbol> genotype)
 	{
 		if(_population == null) throw new RuntimeException("The InterOverOp requires a reference to a Population instance using setPopulation before the mutate method is called.");
-		
+
 		ArrayList<Symbol> s = new ArrayList<Symbol>(genotype);
-		
+
 		Random rand = new Random();
 		int index = rand.nextInt(s.size());
 		int indexPrime = index;
 		//select (randomly) a city c from S'
 		Symbol c = s.get(index);
-		
+
 		boolean terminate = false;
 		//repeat
 		while(!terminate)
@@ -42,10 +42,10 @@ public class InverOverOp implements MutateOperator
 			if (Math.random() <= _p)
 			{
 				//select the city c' from the remaining cities in S'
-				// Note: the paper doesn't say how to select our second city, so we'll 
+				// Note: the paper doesn't say how to select our second city, so we'll
 				// just grab another at random.
 				indexPrime = rand.nextInt(s.size());
-				
+
 			}
 			else
 			{
@@ -60,24 +60,24 @@ public class InverOverOp implements MutateOperator
 				Symbol cPrime = sPrime.get(indexOnSPrime);
 				indexPrime = s.indexOf(cPrime);
 			}
-			
+
 			int betweenTwoCities = Math.abs(indexPrime - index);
 			terminate = betweenTwoCities <= 1 || betweenTwoCities == s.size() - 1;
-			
+
 			// We compare fitness later.
 			if (terminate) return s;
 			// The paper seems to assume our second city will always be after the first
 			// but that's a silly assumption.
 			int start = Math.min(index, indexPrime) + 1; //start after c'
 			int end = Math.max(index, indexPrime);
-					
+
 			invert(s, start, end);
-			
+
 			index = indexPrime;
 		}
 		return s;
 	}
-	
+
 	/**
 	 * Sets the probability of a new edge being created. The default is 0.02
 	 * @param p
@@ -86,7 +86,7 @@ public class InverOverOp implements MutateOperator
 	{
 		_p = p;
 	}
-	
+
 	/**
 	 * Basic inversion operator
 	 * @param genotype
@@ -104,9 +104,9 @@ public class InverOverOp implements MutateOperator
 			start++;
 			end--;
 		}
-		
+
 		return genotype;
-		
+
 	}
 
 	/**
