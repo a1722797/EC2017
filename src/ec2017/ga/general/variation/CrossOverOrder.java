@@ -26,7 +26,7 @@ public class CrossOverOrder implements CrossOverOperator {
         int cutx = rng.nextInt(parentA.size());
         int cuty = cutx;
         while (cutx == cuty) {
-            rng.nextInt(parentA.size());
+            cuty = rng.nextInt(parentA.size());
         }
         int cutStart = Math.min(cutx, cuty);
         int cutEnd = Math.max(cutx, cuty);
