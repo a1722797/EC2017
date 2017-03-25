@@ -68,19 +68,22 @@ public class City implements Symbol
 	{
 		return cache();
 	}
-	
-	// Note, since we don't want to add an inefficient hashCode
-	// which will just slow things down, HashSet may not give a 
-	// unique set.
+
 	@Override
 	public boolean equals(Object o)
 	{
 		if(o == null || !City.class.isInstance(o)) return false;
 		City that = (City)o;
-		
-		return 
-				that._id.equals(this._id) 
-				&& that._x == this._x 
+
+		return
+				that._id.equals(this._id)
+				&& that._x == this._x
 				&& that._y == this._y;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return _id.hashCode();
 	}
 }
