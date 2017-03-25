@@ -4,8 +4,13 @@ import ec2017.ga.general.Individual;
 import ec2017.ga.general.SurvivorSelectionMethod;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 
 /**
+ * A round robin survivor selector
+ *
  * Created by yanshuo on 17/3/15.
  */
 public class RoundRobinSurvivorSelectionMethod implements SurvivorSelectionMethod {
@@ -15,17 +20,26 @@ public class RoundRobinSurvivorSelectionMethod implements SurvivorSelectionMetho
     }
     @Override
     public ArrayList<Individual> select(ArrayList<Individual> oldGeneration, ArrayList<Individual> newGeneration, int size) {
+    	// Combine the generations
         ArrayList<Individual> bothGeneration = newGeneration;
-        int[] score = new int[newGeneration.size() + oldGeneration.size()];
-        for(int i = 0; i < oldGeneration.size(); i++){
-            bothGeneration.add(oldGeneration.get(i));
-        }
+        bothGeneration.addAll(oldGeneration);
+
+        // Calculate each individual's score
+        HashMap<Individual, Integer> scores = new HashMap<>(bothGeneration.size());
         for(int i = 0; i < bothGeneration.size(); i++){
-            score[i] = getScore(bothGeneration, i);
+            scores.put(bothGeneration.get(i), getScore(bothGeneration, i));
         }
-        return getBestNSurvivor(bothGeneration, score, size);
+
+        // Return the best scorers
+        return getBestNSurvivor(bothGeneration, scores, size);
     }
 
+    /**
+     * Compare the Individual at the given index against _q others, choosen at random
+     * @param candidates
+     * @param index
+     * @return
+     */
     private int getScore(ArrayList<Individual> candidates, int index){
         int score = 0;
         for(int i = 0; i < _q; i++){
@@ -33,37 +47,28 @@ public class RoundRobinSurvivorSelectionMethod implements SurvivorSelectionMetho
                 score++;
             }
         }
-        // HACK -- Something was reversed so it was looking for the longest path
-        // inverted the score so now it looks for shortest.
-        return -score;
+        return score;
     }
 
-    private ArrayList<Individual> getBestNSurvivor(ArrayList<Individual> candidates, int[] score, int size){
-        int[] indexSet = new int[candidates.size()];
-        ArrayList<Individual> result = new ArrayList<Individual>();
-        for(int i = 0; i < candidates.size(); i++){
-            indexSet[i] = i;
-        }
-        for(int i = 0; i < candidates.size(); i++){
-            for(int j = 0; j < candidates.size(); j++){
-                if(score[i] < score[j]){
-                    int tmp = -1;
-                    int tmpIndex = -1;
+    /**
+     * Return the size best candidates from the input list, based on the scores in scores
+     * @param candidates
+     * @param scores
+     * @param size
+     * @return
+     */
+    private ArrayList<Individual> getBestNSurvivor(ArrayList<Individual> candidates,
+    		HashMap<Individual, Integer> scores, int size){
+    	Comparator<Individual> comparator = new Comparator<Individual> () {
+			@Override
+			public int compare(Individual o1, Individual o2) {
+				// We want higher scoring candidates to come first, so we negate the comparison
+				return -Integer.compare(scores.get(o1), scores.get(o2));
+			}
+    	};
 
-                    tmp = score[j];
-                    score[j] = score[i];
-                    score[i] = tmp;
-
-                    tmpIndex = indexSet[j];
-                    indexSet[j] = indexSet[i];
-                    indexSet[i] = tmpIndex;
-
-                }
-            }
-        }
-        for(int i = 0; i < size; i++){
-            result.add(candidates.get(indexSet[i]));
-        }
-        return result;
+    	// Sort the list and return the best size
+    	Collections.sort(candidates, comparator);
+    	return new ArrayList<>(candidates.subList(0, size));
     }
 }
