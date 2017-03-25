@@ -6,17 +6,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import ec2017.ga.general.Algorithm;
-import ec2017.ga.general.Population;
-import ec2017.ga.general.Symbol;
-import ec2017.ga.general.selection.*;
-import ec2017.ga.general.variation.*;
+import ec2017.ga.general.*;
+import ec2017.ga.general.variation.InverOverOp;
 
 /**
  * The main entry point for our program.
@@ -28,35 +27,48 @@ public class TSPProblem
 	// Setup our thread pool.
 	static ExecutorService _executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
 	{
-		Algorithm algorithmA = new Algorithm(
-			new CrossOverPMX(),
-			new MutateInversion(),
-			new WindowingFPSParentSelectionMethod(),
-			new RoundRobinSurvivorSelectionMethod(10));
+		// Load the parameters from config.prop
+		File configFile = new File("config.prop");
+		Properties prop = new Properties();
+		prop.load(new FileReader(configFile));
 
-		Algorithm algorithmB = new Algorithm(
-			new CrossOverCycle(),
-			new MutateInversion(),
-			new WindowingFPSParentSelectionMethod(),
-			new ElistmBothSurvivorSelectionMethod());
+		// For each operator, dynamically load and instantiate the class we've been asked to use
+		CrossOverOperator crossover = null;
+		String crossoverClassName = "ec2017.ga.general.variation." + prop.getProperty("crossover");
+		if (crossoverClassName != null) {
+			Class<? extends CrossOverOperator> crossoverClass =
+					(Class<? extends CrossOverOperator>) Class.forName(crossoverClassName);
+			crossover = crossoverClass.getConstructor().newInstance();
+		}
 
-		Algorithm algorithmC = new Algorithm(
-			new CrossOverPMX(),
-			new MutateInversion(),
-			new WindowingFPSParentSelectionMethod(),
-			new ElistmBothSurvivorSelectionMethod());
+		String mutationClassName = "ec2017.ga.general.variation." + prop.getProperty("mutate", "MutateNop");
+		Class<? extends MutateOperator> mutateClass =
+				(Class<? extends MutateOperator>) Class.forName(mutationClassName);
+		MutateOperator mutator = mutateClass.getConstructor().newInstance();
 
-		Algorithm inverOver = new Algorithm(
-			null,
-			new InverOverOp(),
-			new InverOverParentSelectionMethod(),
-			new InverOverSurvivorSelectionMethod());
+		String parentSelectionClassName = "ec2017.ga.general.selection." + prop.getProperty("parent-selection", "NoParentSelectionMethod");
+		Class<? extends ParentSelectionMethod> parentSelectionClass =
+				(Class<? extends ParentSelectionMethod>) Class.forName(parentSelectionClassName);
+		ParentSelectionMethod parentSelector = parentSelectionClass.getConstructor().newInstance();
 
-		runBenchMarks(algorithmA, algorithmB, algorithmC);
-		testIndividual(algorithmB);
-		testIndividual(inverOver);
+		String survivorSelectionClassName = "ec2017.ga.general.selection." + prop.getProperty("survivor-selection", "NoSurvivorSelectionMethod");
+		Class<? extends SurvivorSelectionMethod> survivorSelectionClass =
+				(Class<? extends SurvivorSelectionMethod>) Class.forName(survivorSelectionClassName);
+		SurvivorSelectionMethod survivorSelector = survivorSelectionClass.getConstructor().newInstance();
+
+		int population = new Integer(prop.getProperty("population", "50"));
+		int genetations = new Integer(prop.getProperty("generations", "2000"));
+		int runs = new Integer(prop.getProperty("runs", "1"));
+
+		Algorithm algorithm = new Algorithm(
+				crossover,
+				mutator,
+				parentSelector,
+				survivorSelector);
+
+		runTests(algorithm, population, genetations, runs);
 
         _executor.shutdown();
         try

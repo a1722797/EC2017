@@ -1,0 +1,43 @@
+# The final three algorithms are:
+# (crossover)-(mutate)-(parent-selection)-(survivor-selection)
+# CrossOverPMX-MutateInversion-WindowingFPSParentSelectionMethod-RoundRobinSurvivorSelectionMethod
+# CrossOverCycle-MutateInversion-WindowingFPSParentSelectionMethod-ElistmBothSurvivorSelectionMethod
+# CrossOverPMX-MutateInversion-WindowingFPSParentSelectionMethod-ElistmBothSurvivorSelectionMethod
+#
+# InverOver can be run by setting:
+# mutate = InverOverOp
+# parent-selection = InverOverParentSelectionMethod
+# survivor-selection = InverOverSurvivorSelectionMethod
+# and leaving crossover unset
+
+# Crossover operator class
+# Can be: CrossOverPMX, CrossOverCycle, CrossOverOrder, CrossOverEdgeRecomb
+# Defaults to no crossover operator if this line is absent
+crossover = CrossOverPMX
+
+# Mutation operator class
+# Can be: MutateInsert, MutateInversion, MutateNop, MutateSwap, InverOverOp
+# Defaults to MutateNop if this line is absent
+mutate = MutateInversion
+
+# Parent selection operator class
+# Can be: SigmaFPSParentSelectionMethod, OriginalFPSParentSelectionMethod, NoParentSelectionMethod,
+#         InverOverParentSelectionMethod, RankBasedParentSelectionMethod, SUSParentSelectionMethod,
+#         TournamentParentSelectionMethod, WindowingFPSParentSelectionMethod
+# Defaults to NoParentSelectionMethod
+parent-selection = SigmaFPSParentSelectionMethod
+
+# Survivor selection operator class
+# Can be: RoundRobinSurvivorSelectionMethod, NoSurvivorSelectionMethod, InverOverSurvivorSelectionMethod,
+#         ElistmOnlyChildrenSurvivorSelectionMethod, ElistmBothSurvivorSelectionMethod
+# Defaults to NoSurvivorSelectionMethod
+survivor-selection = ElistmBothSurvivorSelectionMethod
+
+# Population to evolve, defaults to 50
+population = 50
+
+# How many generations to run, defaults to 2,000
+generations = 2000
+
+# How many times to run the algorithms, defaults to 1
+runs = 1

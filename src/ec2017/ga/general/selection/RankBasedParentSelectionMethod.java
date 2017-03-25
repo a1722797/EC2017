@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by yanshuo on 17/3/14.
  */
-public class RankBasdedParentSelectionMethod implements ParentSelectionMethod {
+public class RankBasedParentSelectionMethod implements ParentSelectionMethod {
     @Override
     public ArrayList<Individual> select(ArrayList<Individual> population) {
         int size = population.size();
