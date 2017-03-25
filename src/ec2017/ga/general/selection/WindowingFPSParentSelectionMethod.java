@@ -11,37 +11,38 @@ import java.util.ArrayList;
 public class WindowingFPSParentSelectionMethod implements ParentSelectionMethod {
     @Override
     public ArrayList<Individual> select(ArrayList<Individual> population) {
-        ArrayList<Individual> selectedParents = new ArrayList<Individual>();
+        ArrayList<Individual> selectedParents = new ArrayList<Individual>(population.size());
         double sumOfFitness = 0;
-        double minest = Integer.MAX_VALUE;
-        double [] weight = new double[population.size()];
-        boolean notaccepted;
-        int index = 0;
+        double minFitness = Integer.MAX_VALUE;
+        double [] cumulativeProbs = new double[population.size()];
 
+        // Find the minimum fitness
         for(int i = 0; i < population.size(); i++){
-            if(population.get(i).getFitness() < minest){
-                minest = population.get(i).getFitness();
+            if(population.get(i).getFitness() < minFitness){
+                minFitness = population.get(i).getFitness();
             }
-            sumOfFitness += population.get(i).getFitness();
         }
 
+        // Calculate the total fitness above the minimum
+        for (int i = 0; i < population.size(); i++) {
+            sumOfFitness += population.get(i).getFitness() - minFitness;
+        }
+
+        // Calculate cumulative probability distribution
+        double cumulativeProb = 0;
         for(int i = 0; i < population.size(); i++){
-            weight[i] = (population.get(i).getFitness() - minest) / sumOfFitness;
+            cumulativeProbs[i] = cumulativeProb + (population.get(i).getFitness() - minFitness) / sumOfFitness;
+            cumulativeProb = cumulativeProbs[i];
         }
 
+        // Spin the roulette wheel n times
         for(int i = 0; i < population.size(); i++){
-            notaccepted = true;
-            int loops = 0;
-            while(notaccepted){     //stochastic acceptance
-                index = (int) (population.size() * Math.random());
-                if(Math.random() < weight[index] || loops > population.size() * 2){
-                    notaccepted = false;    //the index of population is choosen
-                }
-                loops++;
-            }
-            selectedParents.add(population.get(index));
+        	double r = Math.random();
+        	int index = 0;
+        	for (; cumulativeProbs[index] < r; index++) {
+        	}
+        	selectedParents.add(population.get(index));
         }
-
 
         return selectedParents;
 
