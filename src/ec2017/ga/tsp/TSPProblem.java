@@ -3,7 +3,6 @@ package ec2017.ga.tsp;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,8 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import ec2017.ga.general.*;
-import ec2017.ga.general.selection.*;
-import ec2017.ga.general.variation.*;
+import ec2017.ga.general.variation.InverOverOp;
 
 /**
  * The main entry point for our program.
