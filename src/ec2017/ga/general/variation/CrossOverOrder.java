@@ -8,11 +8,17 @@ import java.util.Random;
 import ec2017.ga.general.CrossOverOperator;
 import ec2017.ga.general.Symbol;
 
+/**
+ * An implementation of the order crossover operator
+ * @author fergus
+ *
+ */
 public class CrossOverOrder implements CrossOverOperator {
     public ArrayList<ArrayList<Symbol>>
     crossOver(ArrayList<Symbol> parentA,
               ArrayList<Symbol> parentB)
     {
+    	// Initialize the children
         ArrayList<ArrayList<Symbol>> result = new ArrayList<>(2);
 
         ArrayList<Symbol> childA = new ArrayList<>(parentA.size());
@@ -21,7 +27,7 @@ public class CrossOverOrder implements CrossOverOperator {
         result.add(childA);
         result.add(childB);
 
-        // Pick the sections to keep
+        // Pick the section of each parent to keep
         Random rng = new Random();
         int cutx = rng.nextInt(parentA.size());
         int cuty = cutx;

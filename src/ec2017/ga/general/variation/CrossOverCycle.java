@@ -7,11 +7,17 @@ import java.util.HashMap;
 import ec2017.ga.general.CrossOverOperator;
 import ec2017.ga.general.Symbol;
 
+/**
+ * An implementation of the cyclic recombination crossover operator
+ * @author fergus
+ *
+ */
 public class CrossOverCycle implements CrossOverOperator {
     public ArrayList<ArrayList<Symbol>>
     crossOver(ArrayList<Symbol> parentA,
               ArrayList<Symbol> parentB)
     {
+    	// Initialize the two children
         ArrayList<ArrayList<Symbol>> result = new ArrayList<>(2);
 
         ArrayList<Symbol> childA = new ArrayList<>(parentA.size());
@@ -32,15 +38,18 @@ public class CrossOverCycle implements CrossOverOperator {
         	indexMap.put(parentA.get(i), i);
         }
 
-
+        // Find all the cycles
         ArrayList<ArrayList<Integer>> cycleList = new ArrayList<>(parentA.size());
         HashSet<Integer> usedInCycle = new HashSet<>(parentA.size());
 
         for (int i = 0; i < parentA.size(); i++) {
+        	// Skip anything that has already been placed in a cycle,
+        	// so we don't find the same cycle several times
             if (usedInCycle.contains(i)) {
                 continue;
             }
 
+            // Otherwise, follow the cycle until it loops around and add it to the list of cycles
             ArrayList<Integer> newCycle = new ArrayList<>(parentA.size() - usedInCycle.size());
             int head = i;
             while (!usedInCycle.contains(head)) {
@@ -52,6 +61,7 @@ public class CrossOverCycle implements CrossOverOperator {
             cycleList.add(newCycle);
         }
 
+        // Each child takes half the cycles from one parent and half from the other
         for (int i = 0; i < cycleList.size(); i++) {
             ArrayList<Integer> cycle = cycleList.get(i);
 

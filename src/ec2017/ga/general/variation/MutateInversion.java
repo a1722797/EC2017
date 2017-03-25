@@ -8,17 +8,18 @@ import ec2017.ga.general.MutateOperator;
 import ec2017.ga.general.Symbol;
 
 /**
- * 
+ * An implementation of the inversion mutation operator
  * @author Fergus
  */
 public class MutateInversion implements MutateOperator
 {
     @Override
-    public ArrayList<Symbol> mutate(ArrayList<Symbol> genotype) 
+    public ArrayList<Symbol> mutate(ArrayList<Symbol> genotype)
     {
         Random rng = new Random();
         ArrayList<Symbol> result = new ArrayList<Symbol>(genotype);
 
+        // Pick the range to invert
         int x = rng.nextInt(result.size());
         int y = x;
         while (y == x) {
@@ -28,6 +29,7 @@ public class MutateInversion implements MutateOperator
         int start = Math.min(x,y);
         int end = Math.max(x,y);
 
+        // Invert it
         Collections.reverse(result.subList(start, end+1));
 
         return result;
