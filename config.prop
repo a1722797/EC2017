@@ -22,7 +22,7 @@ mutate = MutateInversion
 
 # Parent selection operator class
 # Can be: SigmaFPSParentSelectionMethod, OriginalFPSParentSelectionMethod, NoParentSelectionMethod,
-#         InverOverParentSelectionMethod, RankBasdedParentSelectionMethod, SUSParentSelectionMethod,
+#         InverOverParentSelectionMethod, RankBasedParentSelectionMethod, SUSParentSelectionMethod,
 #         TournamentParentSelectionMethod, WindowingFPSParentSelectionMethod
 # Defaults to NoParentSelectionMethod
 parent-selection = SigmaFPSParentSelectionMethod

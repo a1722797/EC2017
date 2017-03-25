@@ -11,7 +11,7 @@ import ec2017.ga.general.ParentSelectionMethod;
 import ec2017.ga.general.Symbol;
 import ec2017.ga.general.selection.InverOverParentSelectionMethod;
 import ec2017.ga.general.selection.OriginalFPSParentSelectionMethod;
-import ec2017.ga.general.selection.RankBasdedParentSelectionMethod;
+import ec2017.ga.general.selection.RankBasedParentSelectionMethod;
 import ec2017.ga.general.selection.SUSParentSelectionMethod;
 import ec2017.ga.general.selection.SigmaFPSParentSelectionMethod;
 import ec2017.ga.general.selection.TournamentParentSelectionMethod;
@@ -22,47 +22,47 @@ import ec2017.ga.tsp.Path;
 public class TestParentSelection {
 
 	@Test
-	public void testOriginalFPSParentSelectionMethod() 
+	public void testOriginalFPSParentSelectionMethod()
 	{
 		checkForInfiniteLoop(new OriginalFPSParentSelectionMethod());
 	}
-	
+
 	@Test
-	public void testRankBasdedParentSelectionMethod() 
+	public void testRankBasdedParentSelectionMethod()
 	{
-		checkForInfiniteLoop(new RankBasdedParentSelectionMethod());
+		checkForInfiniteLoop(new RankBasedParentSelectionMethod());
 	}
-	
+
 	@Test
-	public void testSigmaFPSParentSelectionMethod() 
+	public void testSigmaFPSParentSelectionMethod()
 	{
 		checkForInfiniteLoop(new SigmaFPSParentSelectionMethod());
 	}
-	
+
 	@Test
-	public void testSUSParentSelectionMethod() 
+	public void testSUSParentSelectionMethod()
 	{
 		checkForInfiniteLoop(new SUSParentSelectionMethod());
 	}
-	
+
 	@Test
-	public void testTournamentParentSelectionMethod() 
+	public void testTournamentParentSelectionMethod()
 	{
 		checkForInfiniteLoop(new TournamentParentSelectionMethod(10));
 	}
-	
+
 	@Test
-	public void testWindowingFPSParentSelectionMethod() 
+	public void testWindowingFPSParentSelectionMethod()
 	{
 		checkForInfiniteLoop(new WindowingFPSParentSelectionMethod());
 	}
-	
+
 	@Test
-	public void testInterOverParentSelectionMethod() 
+	public void testInterOverParentSelectionMethod()
 	{
 		checkForInfiniteLoop(new InverOverParentSelectionMethod());
 	}
-	
+
 	private void checkForInfiniteLoop(ParentSelectionMethod method)
 	{
 		ArrayList<Symbol> cities = new ArrayList<Symbol>();
@@ -72,7 +72,7 @@ public class TestParentSelection {
 		cities.add(cityA);
 		cities.add(cityB);
 		cities.add(cityC);
-		
+
 		ArrayList<City> pathA = new ArrayList<City>();
 		pathA.add(cityA);
 		pathA.add(cityB);
@@ -85,31 +85,31 @@ public class TestParentSelection {
 		pathC.add(cityC);
 		pathC.add(cityA);
 		pathC.add(cityB);
-		
+
 		ArrayList<Individual> population = new ArrayList<Individual>();
 		population.add(new Path(pathA));
 		population.add(new Path(pathB));
 		population.add(new Path(pathC));
-		
-		Thread t = new Thread(new Runnable() 
+
+		Thread t = new Thread(new Runnable()
 		{
-			public void run() 
+			public void run()
 			{
 				method.select(population);
 			}
 		});
-		
+
 		t.start();
 		try
 		{
 			t.join(5000);
-		} 
-		catch (InterruptedException e) 
+		}
+		catch (InterruptedException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		assertFalse(t.isAlive());
 	}
 
