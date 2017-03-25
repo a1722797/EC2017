@@ -11,21 +11,21 @@ import ec2017.ga.general.Symbol;
  * @author pat
  *
  */
-public class Path implements Individual 
+public class Path implements Individual
 {
 	private ArrayList<City> _cities = new ArrayList<City>();
 	private int _startIndex = 0;
 	private double _distance = 0; // If we see a winning distance of zero we'll know we messed up.
-	
+
 	/**
-	 * This is should only be used for a seed individual and for testing. 
+	 * This is should only be used for a seed individual and for testing.
 	 */
 	public Path()
 	{
 	}
-	
+
 	/**
-	 * Create a path from an ordered list of cities.	
+	 * Create a path from an ordered list of cities.
 	 * @param cities
 	 */
 	public Path(ArrayList<City> cities)
@@ -33,9 +33,9 @@ public class Path implements Individual
 		_cities = cities;
 		initialize();
 	}
-	
+
 	/**
-	 * This method initializes the path, assuming a given loop of cities, we calculate 
+	 * This method initializes the path, assuming a given loop of cities, we calculate
 	 * the best possible distance for the given city list by considering the ordered
 	 * list a loop, then setting the start point for the path such that the longest
 	 * individual trip between cities is eliminated.
@@ -47,9 +47,9 @@ public class Path implements Individual
 		{
 			throw new RuntimeException("You've tried to calculate the distance with not enough cities.");
 		}
-		
+
 		City previousCity = _cities.get(_cities.size() - 1);
-		
+
 		for (int i = 0; i < _cities.size(); i++)
 		{
 			City city = _cities.get(i);
@@ -57,12 +57,12 @@ public class Path implements Individual
 
 			// Uncomment this to start at 1
 			//if (city.getId().equals("1"))_startIndex = i;
-			
+
 			_distance += singleDistance;
 			previousCity = city;
 		}
 	}
-	
+
 	/**
 	 * Gives us the total distance of this path.
 	 * @return
@@ -71,7 +71,7 @@ public class Path implements Individual
 	{
 		return _distance;
 	}
-	
+
 	/**
 	 * Since we want a smaller distance, fitness is a negative version of the distance.
 	 * (More fit with less distance).
@@ -82,40 +82,40 @@ public class Path implements Individual
 	{
 		return 1 / _distance;
 	}
-	
+
 	/**
 	 * The genotype for the path is the list of cities.
 	 * This method will return a shallow copy of the underlying array.
 	 */
 	@SuppressWarnings("unchecked")
-	@Override 
+	@Override
 	public ArrayList<Symbol> getGenotype()
 	{
 		// We'll return a clone so they don't mess up our ordering.
 		return (ArrayList<Symbol>) _cities.clone();
 	}
-	
+
 	/**
 	 * This method allows us to compare paths for fitness.
 	 * The compareTo method will return -1 if this individual is less fit,
 	 * 0 if the two are equal, and 1 if this individual is more fit.
 	 */
 	@Override
-	public int compareTo(Individual other) 
+	public int compareTo(Individual other)
 	{
-		// We can only compare classes, so we're going to throw an expception.
+		// We can only compare classes, so we're going to throw an exception.
 		if (!Path.class.isInstance(other))
 		{
 			throw new IllegalArgumentException("Path can only be compared to other Path objects.");
 		}
-		
+
 		// Cast our individual to a path.
 		Path that = (Path)other;
-		
+
 		// Get our total distances.
 		double thisDistance = this.getDistance();
 		double thatDistance = that.getDistance();
-		
+
 		// Compare for this being less fit, or more fit. If neither then we are equal.
 		if (thisDistance > thatDistance) return -1;
 		if (thisDistance < thatDistance) return 1;
@@ -138,7 +138,7 @@ public class Path implements Individual
 	 * This method will use this instance as parentA, with the given instance as parentB.
 	 */
 	@Override
-	public ArrayList<Individual> crossOver(Individual otherParent, CrossOverOperator crossOp) 
+	public ArrayList<Individual> crossOver(Individual otherParent, CrossOverOperator crossOp)
 	{
             ArrayList<ArrayList<Symbol>> children = crossOp.crossOver(getGenotype(), otherParent.getGenotype());
             ArrayList<Individual> result = new ArrayList<>();
@@ -148,16 +148,16 @@ public class Path implements Individual
             }
             return result;
 	}
-	
+
 	/**
-	 * Creates a new path based on a genotype of symbols. The symbols must be 
+	 * Creates a new path based on a genotype of symbols. The symbols must be
 	 * assignable to city or a runtime error will be thrown.
 	 */
 	@Override
 	public Individual create(ArrayList<Symbol> genotype)
 	{
 		ArrayList<City> cities = new ArrayList<City>();
-		
+
 		for(Symbol symbol : genotype)
 		{
 			if (City.class.isAssignableFrom(symbol.getClass()))
@@ -169,10 +169,10 @@ public class Path implements Individual
 				throw new IllegalArgumentException("You need to provide a list of cities.");
 			}
 		}
-		
+
 		return new Path(cities);
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -187,15 +187,15 @@ public class Path implements Individual
 			City city = _cities.get(i);
 			sb.append(city.getId());
 			sb.append(", ");
-			
+
 			i++;
 			if (i == _cities.size()) i = 0;
-			
+
 		} while (i != _startIndex);
-		
+
 		String s = sb.toString();
 		s = s.substring(0, s.length()-2) + "]";
-		
+
 		return s;
 	}
 }

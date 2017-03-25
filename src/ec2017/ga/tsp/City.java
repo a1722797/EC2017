@@ -15,7 +15,7 @@ public class City implements Symbol
 	private long _x;
 	private long _y;
 	private HashMap<City, Double> _distanceCache = new HashMap<>();
-	
+
 	/**
 	 * Create a new city
 	 * @param id The city's unique ID
@@ -28,38 +28,38 @@ public class City implements Symbol
 		_x = x;
 		_y = y;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return The city's identifier.
 	 */
 	public String getId()
 	{
 		return _id;
 	}
-	
+
 	/**
-	 * This method calculates the distance traveling from this city to the given city. 
+	 * This method calculates the distance traveling from this city to the given city.
 	 * @param city The given city.
 	 * @return The distance to the given city.
 	 */
 	public double distanceTo(City city)
 	{
-		// This might save us a cycle or two on a heavily 
+		// This might save us a cycle or two on a heavily
 		// trafficed bit of code.
 		if (_distanceCache.containsKey(city))
 			return _distanceCache.get(city);
-		
-		// Some ol' school a^2 + b^2 == c^2. 
+
+		// Some ol' school a^2 + b^2 == c^2.
 		long xDistance = Math.abs(_x - city._x);
 		long yDistance = Math.abs(_y - city._y);
 		double distance = Math.round(Math.sqrt(xDistance*xDistance + yDistance*yDistance));
-		
+
 		_distanceCache.put(city, distance);
-		
+
 		return distance;
 	}
-	
+
 	/**
 	 * The cache holds a set of previously calculated distance values.
 	 * @return

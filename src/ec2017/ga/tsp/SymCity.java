@@ -8,7 +8,7 @@ package ec2017.ga.tsp;
 public class SymCity extends City
 {
 	/**
-	 * Create a new symetrical city
+	 * Create a new symmetrical city
 	 * @param id The city's unique ID
 	 * @param x The x coordinate
 	 * @param y The y coordinate
@@ -17,7 +17,7 @@ public class SymCity extends City
 	{
 		super(id, x, y);
 	}
-	
+
 	/**
 	 * Will return the distance to a given city
 	 * @param city
@@ -32,5 +32,5 @@ public class SymCity extends City
 		}
 		return distance;
 	}
-	
+
 }
