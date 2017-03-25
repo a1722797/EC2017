@@ -29,8 +29,8 @@ public class TSPProblem
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
 	{
-		// Load the parameters from config.prop
-		File configFile = new File("config.prop");
+		// Load the parameters from config.properties
+		File configFile = new File("config.properties");
 		Properties prop = new Properties();
 		prop.load(new FileReader(configFile));
 
