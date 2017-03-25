@@ -44,7 +44,7 @@ public class RankBasdedParentSelectionMethod implements ParentSelectionMethod {
         for(int i = 0; i < population.size(); i++){
         	double r = Math.random();
         	int index = 0;
-        	for (; cumulativeProbs[index] >= r; index++) {
+        	for (; cumulativeProbs[index] < r; index++) {
         	}
         	selectedParents.add(population.get(index));
         }
