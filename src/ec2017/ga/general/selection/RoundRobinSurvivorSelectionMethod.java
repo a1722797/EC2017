@@ -10,6 +10,9 @@ import java.util.ArrayList;
  */
 public class RoundRobinSurvivorSelectionMethod implements SurvivorSelectionMethod {
     private int _q = 10;
+
+    public RoundRobinSurvivorSelectionMethod(){
+    }
     public RoundRobinSurvivorSelectionMethod(int q){
         _q = q;
     }

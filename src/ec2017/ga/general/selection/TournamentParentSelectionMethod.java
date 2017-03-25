@@ -12,6 +12,8 @@ public class TournamentParentSelectionMethod implements ParentSelectionMethod {
     public int _k = 5;     //choose k individuals randomly
     public double _pro = 1.0;   //the probability of fittest individual chosen
 
+    public TournamentParentSelectionMethod(){
+    }
     public TournamentParentSelectionMethod(int k){
         _k = k;
     }
