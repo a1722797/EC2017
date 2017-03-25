@@ -7,48 +7,52 @@ import java.util.ArrayList;
 
 
 /**
+ * As FPS, but scaled according to the standard deviation of the fitness distribution
+ *
  * Created by yanshuo on 17/3/14.
  */
 public class SigmaFPSParentSelectionMethod implements ParentSelectionMethod {
     @Override
     public ArrayList<Individual> select(ArrayList<Individual> population) {
-        ArrayList<Individual> selectedParents = new ArrayList<Individual>();
-        double sumOfFitness = 0;
+        ArrayList<Individual> selectedParents = new ArrayList<Individual>(population.size());
         double[] fitness = new double[population.size()];
         double [] weight = new double[population.size()];
-        boolean notaccepted;
-        int index = 0;
         double aveFitness = 0;
         double SDFitness = 0;   //sigma(standard devition)
 
+        // Calculate the average and SD of the fitness distribution
         for(int i = 0; i < population.size(); i++){
             fitness[i] = population.get(i).getFitness();
-            sumOfFitness += fitness[i];
         }
         aveFitness = getAve(fitness);
         SDFitness = getSD(fitness);
 
+        double sumOfWeight = 0;
+        // Calculate the scaled weights
         for(int i = 0; i < population.size(); i++){
-            weight[i] = Math.max(fitness[i] - (aveFitness - 2* SDFitness),0) / sumOfFitness;
-
+            weight[i] = Math.max(fitness[i] - (aveFitness - 2* SDFitness),0);
+            sumOfWeight += weight[i];
         }
 
-        for(int i = 0; i < population.size(); i++){
-            notaccepted = true;
-            while(notaccepted){     //stochastic acceptance
-                index = (int) (population.size() * Math.random());
-                if(Math.random() < weight[index] ){
-                    notaccepted = false;    //the index of population is choosen
-                }
-            }
-            selectedParents.add(population.get(index));
+        // Calculate the cumulative probability distribution
+        double cumulativeProb = 0;
+        for (int i = 0; i < population.size(); i++) {
+        	weight[i] = cumulativeProb + (weight[i]/sumOfWeight);
+        	cumulativeProb = weight[i];
         }
+        weight[population.size()-1] = 1.0;
 
+        // Spin the roulette wheel n times
+        for(int i = 0; i < population.size(); i++){
+        	double r = Math.random();
+        	int index = 0;
+        	for (; weight[index] < r; index++) {
+        	}
+        	selectedParents.add(population.get(index));
+        }
 
         return selectedParents;
     }
-
-
 
     private double getAve(double[] set){
         double sum = 0;
