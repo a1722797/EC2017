@@ -34,7 +34,12 @@ public class TournamentParentSelectionMethod implements ParentSelectionMethod {
     private Individual getBestKIndividuals(ArrayList<Individual> population){
     	// Pick _k individuals at random
     	Collections.shuffle(population);
-    	List<Individual> kSubList = population.subList(0, _k);
+    	List<Individual> kSubList;
+    	if (population.size() > _k) {
+    		kSubList = population.subList(0, _k);
+    	} else {
+    		kSubList = population;
+    	}
 
     	// Sort by fitness
     	Collections.sort(kSubList);

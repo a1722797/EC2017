@@ -16,6 +16,7 @@ public class RankBasdedParentSelectionMethod implements ParentSelectionMethod {
     public ArrayList<Individual> select(ArrayList<Individual> population) {
     	// Sort the population by increasing fitness
     	Collections.sort(population);
+    	Collections.reverse(population);
 
     	// Calculate weights
         int size = population.size();
