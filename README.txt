@@ -9,7 +9,7 @@ so the simplest way to build the project is to import it as an eclipse
 project.
 
 The main entry point for the program is in ./src/ec2017/ga/tsp/TSPProblem.java
-When run, the project will load the EA parameters is config.properties and
+When run, the project will load the EA parameters in config.properties and
 run the algorithm. This file contains comments describing what options
 can be configured.
 If you'd like to try the program without waiting days, remove the
