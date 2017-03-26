@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import ec2017.ga.general.*;
 import ec2017.ga.general.variation.InverOverOp;
@@ -35,50 +34,52 @@ public class TSPProblem
 		prop.load(new FileReader(configFile));
 
 		// For each operator, dynamically load and instantiate the class we've been asked to use
+
+		// There's no nop crossover operator, so if one hasn't been configured we default to null (which has the same effect)
 		CrossOverOperator crossover = null;
+		// We don't want to make people put fully-qualified classnames in the config file, so we add that bit here
 		String crossoverClassName = "ec2017.ga.general.variation." + prop.getProperty("crossover");
 		if (crossoverClassName != null) {
+			// If a crossover operator has been configured, we load the class and call the no-argument constructor
 			Class<? extends CrossOverOperator> crossoverClass =
 					(Class<? extends CrossOverOperator>) Class.forName(crossoverClassName);
 			crossover = crossoverClass.getConstructor().newInstance();
 		}
 
+		// Same here for the mutation operator, except we default to MutateNop instead of null
 		String mutationClassName = "ec2017.ga.general.variation." + prop.getProperty("mutate", "MutateNop");
 		Class<? extends MutateOperator> mutateClass =
 				(Class<? extends MutateOperator>) Class.forName(mutationClassName);
 		MutateOperator mutator = mutateClass.getConstructor().newInstance();
 
+		// Same here for the parent selection operator, defaulting to NoParentSelectionMethod
 		String parentSelectionClassName = "ec2017.ga.general.selection." + prop.getProperty("parent-selection", "NoParentSelectionMethod");
 		Class<? extends ParentSelectionMethod> parentSelectionClass =
 				(Class<? extends ParentSelectionMethod>) Class.forName(parentSelectionClassName);
 		ParentSelectionMethod parentSelector = parentSelectionClass.getConstructor().newInstance();
 
+		// Same here for the parent selection operator, defaulting to NoSurvivorSelectionMethod
 		String survivorSelectionClassName = "ec2017.ga.general.selection." + prop.getProperty("survivor-selection", "NoSurvivorSelectionMethod");
 		Class<? extends SurvivorSelectionMethod> survivorSelectionClass =
 				(Class<? extends SurvivorSelectionMethod>) Class.forName(survivorSelectionClassName);
 		SurvivorSelectionMethod survivorSelector = survivorSelectionClass.getConstructor().newInstance();
 
+		// Load the population size, number of generations, and how many times to run the EA,
+		// with reasonable defaults
 		int population = new Integer(prop.getProperty("population", "50"));
 		int genetations = new Integer(prop.getProperty("generations", "2000"));
 		int runs = new Integer(prop.getProperty("runs", "1"));
 
+		// Create the algorithm
 		Algorithm algorithm = new Algorithm(
 				crossover,
 				mutator,
 				parentSelector,
 				survivorSelector);
 
+		// Run it
 		runTests(algorithm, population, genetations, runs);
 
-        _executor.shutdown();
-        try
-        {
-			_executor.awaitTermination(72, TimeUnit.HOURS);
-		}
-        catch (InterruptedException e)
-        {
-			e.printStackTrace();
-		}
         System.out.println("************* Done *************");
 
 	}
