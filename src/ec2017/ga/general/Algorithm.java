@@ -1,5 +1,4 @@
 package ec2017.ga.general;
-
 /**
  * This class acts as a data structure to hold the algorithm configuration which
  * is to be applied to a Population.
