@@ -1,12 +1,13 @@
 package ec2017.ga.general.selection;
 
-import ec2017.ga.general.Individual;
 import ec2017.ga.general.SurvivorSelectionMethod;
+import ttp.TTPSolution;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * A round robin survivor selector
@@ -22,13 +23,13 @@ public class RoundRobinSurvivorSelectionMethod implements SurvivorSelectionMetho
         _q = q;
     }
     @Override
-    public ArrayList<Individual> select(ArrayList<Individual> oldGeneration, ArrayList<Individual> newGeneration, int size) {
+    public List<TTPSolution> select(List<TTPSolution> oldGeneration, List<TTPSolution> newGeneration, int size) {
     	// Combine the generations
-        ArrayList<Individual> bothGeneration = newGeneration;
+    	List<TTPSolution> bothGeneration = newGeneration;
         bothGeneration.addAll(oldGeneration);
 
         // Calculate each individual's score
-        HashMap<Individual, Integer> scores = new HashMap<>(bothGeneration.size());
+        HashMap<TTPSolution, Integer> scores = new HashMap<>(bothGeneration.size());
         for(int i = 0; i < bothGeneration.size(); i++){
             scores.put(bothGeneration.get(i), getScore(bothGeneration, i));
         }
@@ -43,10 +44,10 @@ public class RoundRobinSurvivorSelectionMethod implements SurvivorSelectionMetho
      * @param index
      * @return
      */
-    private int getScore(ArrayList<Individual> candidates, int index){
+    private int getScore(List<TTPSolution> candidates, int index){
         int score = 0;
         for(int i = 0; i < _q; i++){
-            if(candidates.get(index).getFitness() > candidates.get( (int)(Math.random()*candidates.size()) ).getFitness()){
+            if(candidates.get(index).getObjective() > candidates.get( (int)(Math.random()*candidates.size()) ).getObjective()){
                 score++;
             }
         }
@@ -60,11 +61,11 @@ public class RoundRobinSurvivorSelectionMethod implements SurvivorSelectionMetho
      * @param size
      * @return
      */
-    private ArrayList<Individual> getBestNSurvivor(ArrayList<Individual> candidates,
-    		HashMap<Individual, Integer> scores, int size){
-    	Comparator<Individual> comparator = new Comparator<Individual> () {
+    private List<TTPSolution> getBestNSurvivor(List<TTPSolution> candidates,
+    		HashMap<TTPSolution, Integer> scores, int size){
+    	Comparator<TTPSolution> comparator = new Comparator<TTPSolution> () {
 			@Override
-			public int compare(Individual o1, Individual o2) {
+			public int compare(TTPSolution o1, TTPSolution o2) {
 				// We want higher scoring candidates to come first, so we negate the comparison
 				return -Integer.compare(scores.get(o1), scores.get(o2));
 			}

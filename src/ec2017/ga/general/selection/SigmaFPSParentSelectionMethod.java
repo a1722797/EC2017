@@ -1,9 +1,10 @@
 package ec2017.ga.general.selection;
 
-import ec2017.ga.general.Individual;
 import ec2017.ga.general.ParentSelectionMethod;
+import ttp.TTPSolution;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -13,8 +14,8 @@ import java.util.ArrayList;
  */
 public class SigmaFPSParentSelectionMethod implements ParentSelectionMethod {
     @Override
-    public ArrayList<Individual> select(ArrayList<Individual> population) {
-        ArrayList<Individual> selectedParents = new ArrayList<Individual>(population.size());
+    public List<TTPSolution> select(List<TTPSolution> population) {
+    	List<TTPSolution> selectedParents = new ArrayList<TTPSolution>(population.size());
         double[] fitness = new double[population.size()];
         double [] weight = new double[population.size()];
         double aveFitness = 0;
@@ -22,7 +23,7 @@ public class SigmaFPSParentSelectionMethod implements ParentSelectionMethod {
 
         // Calculate the average and SD of the fitness distribution
         for(int i = 0; i < population.size(); i++){
-            fitness[i] = population.get(i).getFitness();
+            fitness[i] = population.get(i).getObjective();
         }
         aveFitness = getAve(fitness);
         SDFitness = getSD(fitness);

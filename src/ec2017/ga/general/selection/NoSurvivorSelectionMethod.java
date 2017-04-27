@@ -1,9 +1,10 @@
 package ec2017.ga.general.selection;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import ec2017.ga.general.Individual;
 import ec2017.ga.general.SurvivorSelectionMethod;
+import ttp.TTPSolution;
 
 /**
  * This is a stub implementation for testing.
@@ -16,11 +17,11 @@ public class NoSurvivorSelectionMethod implements SurvivorSelectionMethod
 	 * Stub implementation. Returns a shallow copy of the oldGeneration.
 	 */
 	@Override
-	public ArrayList<Individual> select(
-			ArrayList<Individual> oldGeneration, ArrayList<Individual> newGeneration,
-			int size) 
+	public List<TTPSolution> select(
+			List<TTPSolution> oldGeneration, List<TTPSolution> newGeneration,
+			int size)
 	{
-		return new ArrayList<Individual>(oldGeneration);
+		return new ArrayList<TTPSolution>(oldGeneration);
 	}
 
 }

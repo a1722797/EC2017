@@ -1,10 +1,11 @@
 package ec2017.ga.general.selection;
 
-import ec2017.ga.general.Individual;
 import ec2017.ga.general.SurvivorSelectionMethod;
+import ttp.TTPSolution;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Implementation of elitism selection on just the new generation
@@ -13,10 +14,10 @@ import java.util.Collections;
  */
 public class ElistmOnlyChildrenSurvivorSelectionMethod implements SurvivorSelectionMethod {
     @Override
-    public ArrayList<Individual> select(ArrayList<Individual> oldGeneration, ArrayList<Individual> newGeneration, int size) {
+    public List<TTPSolution> select(List<TTPSolution> oldGeneration, List<TTPSolution> newGeneration, int size) {
 
-        ArrayList<Individual> candidates = newGeneration;
-        ArrayList<Individual> survivors = getBestNIndividual(candidates, size);
+        List<TTPSolution> candidates = newGeneration;
+        List<TTPSolution> survivors = getBestNIndividual(candidates, size);
         return survivors;
     }
 
@@ -26,7 +27,7 @@ public class ElistmOnlyChildrenSurvivorSelectionMethod implements SurvivorSelect
      * @param size
      * @return
      */
-    public ArrayList<Individual> getBestNIndividual(ArrayList<Individual> candidates, int size){
+    public List<TTPSolution> getBestNIndividual(List<TTPSolution> candidates, int size){
     	Collections.sort(candidates);
     	Collections.reverse(candidates);
     	return new ArrayList<>(candidates.subList(0, size));

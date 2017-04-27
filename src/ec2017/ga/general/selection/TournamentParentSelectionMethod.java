@@ -1,7 +1,7 @@
 package ec2017.ga.general.selection;
 
-import ec2017.ga.general.Individual;
 import ec2017.ga.general.ParentSelectionMethod;
+import ttp.TTPSolution;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,18 +25,18 @@ public class TournamentParentSelectionMethod implements ParentSelectionMethod {
     }
 
     @Override
-    public ArrayList<Individual> select(ArrayList<Individual> population) {
-        ArrayList<Individual> selectedParents = new ArrayList<Individual>(population.size());
+    public List<TTPSolution> select(List<TTPSolution> population) {
+    	List<TTPSolution> selectedParents = new ArrayList<TTPSolution>(population.size());
         for(int i = 0; i < population.size(); i++) {
             selectedParents.add(getBestKIndividuals(population));
         }
         return selectedParents;
     }
 
-    private Individual getBestKIndividuals(ArrayList<Individual> population){
+    private TTPSolution getBestKIndividuals(List<TTPSolution> population){
     	// Pick _k individuals at random
     	Collections.shuffle(population);
-    	List<Individual> kSubList;
+    	List<TTPSolution> kSubList;
     	if (population.size() > _k) {
     		kSubList = population.subList(0, _k);
     	} else {

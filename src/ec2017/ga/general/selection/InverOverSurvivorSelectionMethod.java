@@ -1,24 +1,25 @@
 package ec2017.ga.general.selection;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import ec2017.ga.general.Individual;
 import ec2017.ga.general.SurvivorSelectionMethod;
+import ttp.TTPSolution;
 
 public class InverOverSurvivorSelectionMethod implements SurvivorSelectionMethod
 {
 
 	@Override
-	public ArrayList<Individual> select(
-			ArrayList<Individual> oldGeneration, ArrayList<Individual> newGeneration, int size) 
+	public List<TTPSolution> select(
+			List<TTPSolution> oldGeneration, List<TTPSolution> newGeneration, int size)
 	{
-		ArrayList<Individual> output = new ArrayList<Individual>();
-		
+		List<TTPSolution> output = new ArrayList<TTPSolution>();
+
 		for (int i = 0; i < size; i++)
 		{
-			Individual parent = oldGeneration.get(i);
-			Individual child = newGeneration.get(i);
-			if(parent.getFitness() > child.getFitness())
+			TTPSolution parent = oldGeneration.get(i);
+			TTPSolution child = newGeneration.get(i);
+			if(parent.getObjective() > child.getObjective())
 			{
 				output.add(parent);
 			}
@@ -27,8 +28,8 @@ public class InverOverSurvivorSelectionMethod implements SurvivorSelectionMethod
 				output.add(child);
 			}
 		}
-		
+
 		return output;
 	}
-	
+
 }

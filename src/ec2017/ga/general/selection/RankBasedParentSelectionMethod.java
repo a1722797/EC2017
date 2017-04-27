@@ -1,10 +1,11 @@
 package ec2017.ga.general.selection;
 
-import ec2017.ga.general.Individual;
 import ec2017.ga.general.ParentSelectionMethod;
+import ttp.TTPSolution;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Implementation of rank-based parent selection
@@ -13,7 +14,7 @@ import java.util.Collections;
  */
 public class RankBasedParentSelectionMethod implements ParentSelectionMethod {
     @Override
-    public ArrayList<Individual> select(ArrayList<Individual> population) {
+    public List<TTPSolution> select(List<TTPSolution> population) {
     	// Sort the population by increasing fitness
     	Collections.sort(population);
     	Collections.reverse(population);
@@ -40,8 +41,8 @@ public class RankBasedParentSelectionMethod implements ParentSelectionMethod {
         // Spin the roulette wheel n times
         return getParentByPro(weight, population);
     }
-    private ArrayList<Individual> getParentByPro(double[] cumulativeProbs, ArrayList<Individual> population){
-        ArrayList<Individual> selectedParents = new ArrayList<Individual>(population.size());
+    private List<TTPSolution> getParentByPro(double[] cumulativeProbs, List<TTPSolution> population){
+    	List<TTPSolution> selectedParents = new ArrayList<TTPSolution>(population.size());
         for(int i = 0; i < population.size(); i++){
         	double r = Math.random();
         	int index = 0;
