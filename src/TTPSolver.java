@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import ec2017.ga.general.*;
 import ttp.TTPInstance;
 import ttp.TTPSolution;
+import ttp.Optimisation.Optimisation;
 
 /**
  * The main entry point for our program.
@@ -108,6 +109,8 @@ public class TTPSolver
 
 			TTPInstance ttp = new TTPInstance(inFile);
 
+			int[] start_tour = Optimisation.linkernTour(ttp);
+
 			double[] values = new double[runs];
 
 			for (int i = 0; i < runs; i++)
@@ -116,6 +119,8 @@ public class TTPSolver
 
 				Population population =
 					new Population(ttp, populationSize, algorithm);
+
+				population.setTour(start_tour);
 
 				generationLog.append(inFile.getName());
 				generationLog.append(',');

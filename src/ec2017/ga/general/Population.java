@@ -38,31 +38,35 @@ public class Population
 	}
 
 	/**
+	 * Sets the TSP tour to be used by all individuals. Must be called before
+	 * trying to evolve a solution
+	 * @param tour
+	 */
+	public void setTour(int[] tour)
+	{
+		for (TTPSolution solution : _population) {
+			solution.tspTour = tour;
+			_ttp.evaluate(solution);
+		}
+	}
+
+	/**
 	 * Generates a new, randomised population.
 	 */
 	private void generatePopulation()
 	{
-		List<Integer> tour = new ArrayList<>(_ttp.numberOfNodes);
-		for (int i = 0; i < _ttp.numberOfNodes; i++) {
-			tour.add(i);
-		}
+		// We're going to overwrite this with whatever we fix the tour to anyway,
+		// so this doesn't need to be a valid tour
+		int[] tourArray = new int[_ttp.numberOfNodes+1];
 
 		for (int i = 0; i < _populationSize; i++)
 		{
-			Collections.shuffle(tour);
-			// We need to list the starting city at the end of the tour as well
-			int[] tourArray = new int[_ttp.numberOfNodes+1];
-			for (int j = 0; j < tourArray.length; j++) {
-				tourArray[j] = tour.get(j % _ttp.numberOfNodes);
-			}
-
 			int[] packingPlan = new int[_ttp.numberOfItems];
 			for (int j = 0; j < packingPlan.length; j++) {
 				packingPlan[j] = Math.random() >= 0.5 ? 1 : 0;
 			}
 
 			TTPSolution solution = new TTPSolution(tourArray, packingPlan);
-			_ttp.evaluate(solution);
 			_population.add(solution);
 		}
 	}
