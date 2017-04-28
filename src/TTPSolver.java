@@ -92,9 +92,13 @@ public class TTPSolver
 		StringBuilder resultsLog = new StringBuilder();
 		StringBuilder generationLog = new StringBuilder();
 
-		File inputFolder = new File("TTP_data");
+		File inputFolder = new File("TTPdata");
 		for(File inFile : inputFolder.listFiles())
 		{
+			if (!inFile.getAbsolutePath().endsWith(".ttp")) {
+				continue;
+			}
+
 			resultsLog.append("Input: ");
 			resultsLog.append(inFile.getName());
 			resultsLog.append(System.lineSeparator());
