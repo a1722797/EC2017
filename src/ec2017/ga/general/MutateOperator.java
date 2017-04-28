@@ -1,5 +1,6 @@
 package ec2017.ga.general;
 
+import ttp.TTPInstance;
 import ttp.TTPSolution;
 
 /**
@@ -16,4 +17,6 @@ public interface MutateOperator
 	 * @return
 	 */
 	public TTPSolution mutate(TTPSolution genotype);
+
+	public void setInstance(TTPInstance ttp);
 }

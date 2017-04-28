@@ -34,6 +34,12 @@ public class Population
 		_algorithm = algorithm;
 		_ttp = ttp;
 
+		algorithm.getMutate().setInstance(ttp);
+		CrossOverOperator cross = algorithm.getCrossOver();
+		if (cross != null) {
+			cross.setInstance(ttp);
+		}
+
 		generatePopulation();
 	}
 
