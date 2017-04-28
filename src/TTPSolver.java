@@ -37,8 +37,9 @@ public class TTPSolver
 		// There's no nop crossover operator, so if one hasn't been configured we default to null (which has the same effect)
 		CrossOverOperator crossover = null;
 		// We don't want to make people put fully-qualified classnames in the config file, so we add that bit here
-		String crossoverClassName = "ec2017.ga.general.variation." + prop.getProperty("crossover");
+		String crossoverClassName = prop.getProperty("crossover");
 		if (crossoverClassName != null) {
+			crossoverClassName = "ec2017.ga.general.variation." + crossoverClassName;
 			// If a crossover operator has been configured, we load the class and call the no-argument constructor
 			Class<? extends CrossOverOperator> crossoverClass =
 					(Class<? extends CrossOverOperator>) Class.forName(crossoverClassName);
@@ -66,7 +67,7 @@ public class TTPSolver
 		// Load the population size, number of generations, and how many times to run the EA,
 		// with reasonable defaults
 		int population = new Integer(prop.getProperty("population", "50"));
-		int genetations = new Integer(prop.getProperty("generations", "2000"));
+		int runtime = new Integer(prop.getProperty("runtime", "600"));
 		int runs = new Integer(prop.getProperty("runs", "1"));
 
 		// Create the algorithm
@@ -77,7 +78,7 @@ public class TTPSolver
 				survivorSelector);
 
 		// Run it
-		runTests(algorithm, population, genetations, runs);
+		runTests(algorithm, population, runtime, runs);
 
         System.out.println("************* Done *************");
 
@@ -86,11 +87,13 @@ public class TTPSolver
 	private static void runTests(
 			Algorithm algorithm,
 			int populationSize,
-			int generations,
+			int runtime,
 			int runs)
 	{
 		StringBuilder resultsLog = new StringBuilder();
 		StringBuilder generationLog = new StringBuilder();
+
+		int runtimemilli = runtime * 1000 - 200;
 
 		File inputFolder = new File("TTPdata");
 		for(File inFile : inputFolder.listFiles())
@@ -130,8 +133,8 @@ public class TTPSolver
 				generationLog.append(',');
 
 				// Do our evolution
-				for (int j = 0; j < generations; j++)
-				{
+				int j = 0;
+				while (System.currentTimeMillis() - starttime < runtimemilli) {
 					population.evolve();
 					if (j == 1 || j % 500 == 0)
 					{
@@ -139,6 +142,7 @@ public class TTPSolver
 						generationLog.append(solution.ob);
 						generationLog.append(',');
 					}
+					j++;
 				}
 
 				generationLog.append(System.lineSeparator());
@@ -192,8 +196,8 @@ public class TTPSolver
 			fileName.append(algorithm.toString());
 			fileName.append(",pop_");
 			fileName.append(populationSize);
-			fileName.append(",gen_");
-			fileName.append(generations);
+			fileName.append(",time_");
+			fileName.append(runtime);
 			fileName.append(",runs_");
 			fileName.append(runs);
 
