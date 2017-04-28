@@ -2,10 +2,7 @@ package ttp.Optimisation;
 
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -51,12 +48,19 @@ public class Optimisation {
                     && (System.currentTimeMillis()-startingTimeForRuntimeLimit)>=maxRuntime)
                 break;
             
-            
             if (debugPrint) {
                 System.out.println(" i="+i+"("+counter+") bestObjective="+bestObjective); 
             }
             int[] newPackingPlan = (int[])DeepCopy.copy(packingPlan);
-            
+
+            //every 50 generations the status of each items changes with the probability 5/(length of item set)
+            if(mode == 12 || mode == 22){
+                if (i%50 == 0){
+                    newPackingPlan = changeItemStatus(newPackingPlan);
+                }
+                mode = mode / 10;
+            }
+
             boolean flippedToZero = false;
             
             switch (mode) {
@@ -68,7 +72,7 @@ public class Optimisation {
                                 newPackingPlan[position] = 0;
                                 // investigation: was at least one item flipped to zero during an improvement?
 //                                flippedToZero = true;
-                    } else {
+                    } else if (newPackingPlan[position] == 0){
                         newPackingPlan[position] = 1;
                     }
                     break;
@@ -80,7 +84,8 @@ public class Optimisation {
                                 newPackingPlan[j] = 0;
                                 // investigation: was at least one item flipped to zero during an improvement?
 //                                flippedToZero = true;
-                            } else {
+                            }
+                            else if(newPackingPlan[j] == 0) {
                                 newPackingPlan[j] = 1;
                             }
                     }
@@ -148,7 +153,7 @@ public class Optimisation {
                 command.add("-o");
                 command.add(tspresultfilename);
                 command.add(tspfilename);
-//                printListOfStrings(command);
+                printListOfStrings(command);
 
                 ProcessBuilder builder = new ProcessBuilder(command);
                 builder.redirectErrorStream(true);
@@ -168,7 +173,9 @@ public class Optimisation {
             List<String> command = new ArrayList<String>();
             command.add("cat");
             command.add(tspresultfilename);
-//            printListOfStrings(command);
+
+            printListOfStrings(command);
+
             ProcessBuilder builder = new ProcessBuilder(command);
             builder.redirectErrorStream(true);
             final Process process = builder.start();
@@ -291,5 +298,25 @@ public class Optimisation {
         for (String s:list)
             result+=s+" ";
         System.out.println(result);
+    }
+
+    //every 50 generations the status of each items changes with the probability 5/(length of item set)
+    private static int[] changeItemStatus(int[] packplan){
+        int size = packplan.length;
+        for(int i = 0; i < size; i++){
+            Random tmp = new Random();
+            if(tmp.nextInt(size) < 5){
+                if(packplan[i] == -1){
+                    packplan[i] = 0;
+                }
+                else {
+                    packplan[i] = -1;
+                }
+                //System.out.println(i);
+                //System.out.print(tmp.nextInt());
+            }
+
+        }
+        return packplan;
     }
 }
