@@ -1,0 +1,45 @@
+Input: a280_n2790_uncorr_10.ttp
+Costs:
+411714.78956539405,
+Mean cost: 411714.78956539405
+Std Deviation: 0.0
+Input: pla33810_n338090_uncorr_10.ttp
+Costs:
+390411.09385737777,
+Mean cost: 390411.09385737777
+Std Deviation: 0.0
+Input: a280_n1395_uncorr-similar-weights_05.ttp
+Costs:
+104365.73090074613,
+Mean cost: 104365.73090074613
+Std Deviation: 0.0
+Input: fnl4461_n22300_uncorr-similar-weights_05.ttp
+Costs:
+1478962.5117638893,
+Mean cost: 1478962.5117638893
+Std Deviation: 0.0
+Input: a280_n279_bounded-strongly-corr_01.ttp
+Costs:
+8.33768939635314E7,
+Mean cost: 8.33768939635314E7
+Std Deviation: 0.0
+Input: fnl4461_n44600_uncorr_10.ttp
+Costs:
+5618734.428033475,
+Mean cost: 5618734.428033475
+Std Deviation: 0.0
+Input: fnl4461_n4460_bounded-strongly-corr_01.ttp
+Costs:
+2.7540730445618134E11,
+Mean cost: 2.7540730445618134E11
+Std Deviation: 0.0
+Input: pla33810_n33809_bounded-strongly-corr_01.ttp
+Costs:
+6.394274167305639E10,
+Mean cost: 6.394274167305639E10
+Std Deviation: 0.0
+Input: pla33810_n169045_uncorr-similar-weights_05.ttp
+Costs:
+-1.939594645307304E7,
+Mean cost: -1.939594645307304E7
+Std Deviation: 0.0
