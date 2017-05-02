@@ -6,8 +6,9 @@ import ec2017.ga.general.MutateOperator;
 import ttp.TTPInstance;
 import ttp.TTPSolution;
 
-public class MutateRandom implements MutateOperator {
+public class MutateRandomWithOptimisation implements MutateOperator {
 	private TTPInstance _ttp;
+	private PackingPlanOptimiser optimiser;
 
 	@Override
 	public TTPSolution mutate(TTPSolution genotype) {
@@ -17,12 +18,16 @@ public class MutateRandom implements MutateOperator {
 		int index = (int)(Math.random() * _ttp.numberOfItems);
 		packingPlan[index] ^= 1;
 
-		return new TTPSolution(tspTour, packingPlan);
+		TTPSolution solution = new TTPSolution(tspTour, packingPlan);
+		optimiser.optimisePackingPlan(solution);
+
+		return solution;
 	}
 
 	@Override
 	public void setInstance(TTPInstance ttp) {
 		_ttp = ttp;
+		optimiser = new PackingPlanOptimiser(ttp);
 	}
 
 }
