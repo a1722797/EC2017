@@ -29,10 +29,16 @@ public class Driver {
        
         if (args.length==0) 
 //            args = new String[]{"instances", "a280_n1395_bounded-strongly-corr_", // to do all 10 instances (several files match the pattern)
-            args = new String[]{"instances", "a280_n1395_bounded-strongly-corr_10.ttp", // to do just this 1 instance
+            args = new String[]{"instances", "a280_n1395_uncorr-similar-weights_05.ttp", // to do just this 1 instance
 //            args = new String[]{"instances", "fnl4461_n4460_bounded-strongly-corr_01.ttp", // to do just this 1 instance
+//            args = new String[]{"instances", "pla33810_n169045_uncorr-similar-weights_05.ttp", // to do just this 1 instance
+
+//            args = new String[]{"instances", "pla33810_n33809_bounded-strongly-corr_01.ttp", // to do all 10 instances (several files match the pattern)
+//            args = new String[]{"instances", "fnl4461_n44600_uncorr_10.ttp", // to do just this 1 instance
+//            args = new String[]{"instances", "fnl4461_n22300_uncorr-similar-weights_05.ttp", // to do just this 1 instance
 //            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
-            "12", "10000", "60000"};
+
+                            "7", "100000", "6000000", "2"};
 //        ttp.Optimisation.Optimisation.doAllLinkernTours();
 //        runSomeTests();
         doBatch(args);
@@ -47,6 +53,7 @@ public class Driver {
         int algorithm = Integer.parseInt(args[2]);
         int durationWithoutImprovement = Integer.parseInt(args[3]);
         int maxRuntime = Integer.parseInt(args[4]);
+        int exercise = Integer.parseInt(args[5]);
         
 //        System.out.println("files.length="+files.length+" algorithm="+algorithm+" durationWithoutImprovement="+durationWithoutImprovement);
 //        System.out.println("wend wendUsed fp ftraw ft ob computationTime");
@@ -62,15 +69,23 @@ public class Driver {
             int[] tour = Optimisation.linkernTour(instance);
 
 
-            System.out.print(f.getName()+": ");
+            System.out.println(f.getName()+": ");
             
             // do the optimisation
-            TTPSolution solution = Optimisation.hillClimber(instance, tour, algorithm, 
-                    durationWithoutImprovement, maxRuntime);
-            
+            TTPSolution solution = null;
+
+            if(algorithm <5) {
+                solution = Optimisation.hillClimber(instance, tour, algorithm,
+                        durationWithoutImprovement, maxRuntime, exercise);
+            }
+
+            if(algorithm == 7) {
+                solution = Optimisation.greedyHillClimber(instance, tour, algorithm,
+                        durationWithoutImprovement, maxRuntime, exercise);
+            }
             
             // print to file
-            solution.writeResult(resultTitle);
+//            solution.writeResult(resultTitle);
             
             // print to screen
             solution.println();
@@ -121,12 +136,12 @@ public class Driver {
         
         int durationWithoutImprovement = 100;
         
-        System.out.println("\nOptimiser: hillclimber (flip 1)");
-        Optimisation.hillClimber(instance, tour, 1, durationWithoutImprovement, 600).printFull();
-        
-        System.out.println("\nOptimiser: hillclimber (flip with prob 1/n)");
-        Optimisation.hillClimber(instance, tour, 2, durationWithoutImprovement, 600).printFull();
-        
+//        System.out.println("\nOptimiser: hillclimber (flip 1)");
+//        Optimisation.hillClimber(instance, tour, 1, durationWithoutImprovement, 600).printFull();
+//
+//        System.out.println("\nOptimiser: hillclimber (flip with prob 1/n)");
+//        Optimisation.hillClimber(instance, tour, 2, durationWithoutImprovement, 600).printFull();
+//
         
     }
     
