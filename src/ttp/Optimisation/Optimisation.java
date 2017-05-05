@@ -170,18 +170,18 @@ public class Optimisation {
                 if (debugPrint) System.out.println("Program terminated!");
             }
 
-            List<String> command = new ArrayList<String>();
-            command.add("cat");
-            command.add(tspresultfilename);
-
-            printListOfStrings(command);
-
-            ProcessBuilder builder = new ProcessBuilder(command);
-            builder.redirectErrorStream(true);
-            final Process process = builder.start();
-            InputStream is = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
+//            List<String> command = new ArrayList<String>();
+//            command.add("cat");
+//            command.add(tspresultfilename);
+//
+//            printListOfStrings(command);
+//
+//            ProcessBuilder builder = new ProcessBuilder(command);
+//            builder.redirectErrorStream(true);
+//            final Process process = builder.start();
+//            InputStream is = process.getInputStream();
+//            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(new FileReader(tspresultfilename));
             // discard the first line
             String line = br.readLine();                    
             for (int i=0; i<result.length; i++) {
