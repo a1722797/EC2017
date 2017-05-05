@@ -192,9 +192,9 @@ public class Optimisation {
                 result[i] = number;
                 if (debugPrint) System.out.println(Arrays.toString(result));
             }
-            if (debugPrint) System.out.println("Program terminated?");    
-            int rc = process.waitFor();
-            if (debugPrint) System.out.println("Program terminated!");
+//            if (debugPrint) System.out.println("Program terminated?");    
+//            int rc = process.waitFor();
+//            if (debugPrint) System.out.println("Program terminated!");
             
             } catch (Exception ex) {
             }
