@@ -8,10 +8,9 @@ The folder this file is in is the eclipse project for the assignment,
 so the simplest way to build the project is to import it as an eclipse
 project.
 
-The main entry point for the program is in ./src/ec2017/ga/tsp/TSPProblem.java
+The main entry point for the program is in ./src/TTPSolver.java
 When run, the project will load the EA parameters in config.properties and
 run the algorithm. This file contains comments describing what options
 can be configured.
-If you'd like to try the program without waiting days, remove the
-larger data sets from ./TSP_data.
+Input is taken from the files in ./TTPdata.
 Output will be generated in ./output.
