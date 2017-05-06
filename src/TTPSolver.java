@@ -70,9 +70,6 @@ public class TTPSolver
 		int runtime = new Integer(prop.getProperty("runtime", "600"));
 		int runs = new Integer(prop.getProperty("runs", "1"));
 
-		boolean dynamicItems = new Boolean(prop.getProperty("dynamicItems", "false"));
-		boolean dynamicTours = new Boolean(prop.getProperty("dynamicTours", "false"));
-
 		// Create the algorithm
 		Algorithm algorithm = new Algorithm(
 				crossover,
@@ -83,9 +80,7 @@ public class TTPSolver
 		// Run it
 		runTests(algorithm, population, runtime, runs);
 
-		if (!dynamicItems && !dynamicTours) {
-			runOptimisation(runtime);
-		}
+		runOptimisation(runtime);
 
         System.out.println("************* Done *************");
 

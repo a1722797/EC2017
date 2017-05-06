@@ -7,9 +7,8 @@ import ec2017.ga.general.CrossOverOperator;
 import ttp.TTPInstance;
 import ttp.TTPSolution;
 
-public class CrossOverRandomWithOptimisation implements CrossOverOperator {
+public class CrossOverRandom implements CrossOverOperator {
 	private TTPInstance _ttp;
-	private PackingPlanOptimiser optimiser;
 
 	@Override
 	public List<TTPSolution> crossOver(TTPSolution parentA, TTPSolution parentB) {
@@ -26,7 +25,6 @@ public class CrossOverRandomWithOptimisation implements CrossOverOperator {
 		}
 
 		TTPSolution solution = new TTPSolution(tspTour, packingPlan);
-		optimiser.optimisePackingPlan(solution);
 		result.add(solution);
 		return result;
 	}
@@ -34,7 +32,6 @@ public class CrossOverRandomWithOptimisation implements CrossOverOperator {
 	@Override
 	public void setInstance(TTPInstance ttp) {
 		_ttp = ttp;
-		optimiser = new PackingPlanOptimiser(ttp);
 	}
 
 }
