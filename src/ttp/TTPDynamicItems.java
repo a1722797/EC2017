@@ -28,9 +28,9 @@ public class TTPDynamicItems {
                         for(int i = 1; i < tmpStr.length; i++){
                             tmplist.add(Integer.parseInt(tmpStr[i]));
                         }
-//                        for(int i = 0; i < tmplist.size(); i++){
-//                            System.out.println(i+" "+tmplist.get(i));
-//                        }
+                        for(int i = 0; i < tmplist.size(); i++){
+                            //System.out.println(i+" "+tmplist.get(i));
+                        }
                         dItem.add(tmplist);
                     }
                     br.close();
@@ -51,7 +51,7 @@ public class TTPDynamicItems {
 
                     for(int i = 0; i < this.dynamicItemStatus.size(); i++){
                         for(int j = 0; j < this .dynamicItemStatus.get(i).size(); j++) {
-                            System.out.println(i+" "+this.dynamicItemStatus.get(i).get(j));
+                            //System.out.println(i+" "+this.dynamicItemStatus.get(i).get(j));
                         }
                     }
 
