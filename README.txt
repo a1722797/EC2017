@@ -8,9 +8,12 @@ The folder this file is in is the eclipse project for the assignment,
 so the simplest way to build the project is to import it as an eclipse
 project.
 
-The main entry point for the program is in ./src/TTPSolver.java
+The main entry point for the program is in ./src/TTPSolver.java. 
 When run, the project will load the EA parameters in config.properties and
 run the algorithm. This file contains comments describing what options
 can be configured.
 Input is taken from the files in ./TTPdata.
 Output will be generated in ./output.
+
+Driver.java is the entry of exercise 2 which is about the dynamic Items.
+Class OptimisationofDynamicItems is the main class of exercise 2 of Dynamic items.The dynamic benchmarks would be created at the first run.  Have to choose benchmark 1 or 2 manually in line 15 of class OptimisationofDynamicItems.
