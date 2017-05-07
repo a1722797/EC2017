@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ttp.TTPInstance;
+import ttp.Optimisation.OptimisationofDynamicItems;
 import ttp.TTPSolution;
 import ttp.Utils.DeepCopy;
 import ttp.Utils.Utils;
@@ -28,17 +29,17 @@ public class Driver {
     public static void main(String[] args) {
        
         if (args.length==0) 
-//            args = new String[]{"instances", "a280_n1395_bounded-strongly-corr_", // to do all 10 instances (several files match the pattern)
-            args = new String[]{"instances", "a280_n1395_uncorr-similar-weights_05.ttp", // to do just this 1 instance
-//            args = new String[]{"instances", "fnl4461_n4460_bounded-strongly-corr_01.ttp", // to do just this 1 instance
-//            args = new String[]{"instances", "pla33810_n169045_uncorr-similar-weights_05.ttp", // to do just this 1 instance
+//            args = new String[]{"TTPdata", "a280_n1395_bounded-strongly-corr_", // to do all 10 instances (several files match the pattern)
+            args = new String[]{"TTPdata", "a280_n1395_uncorr-similar-weights_05.ttp", // to do just this 1 instance
+//            args = new String[]{"TTPdata", "fnl4461_n4460_bounded-strongly-corr_01.ttp", // to do just this 1 instance
+//            args = new String[]{"TTPdata", "pla33810_n169045_uncorr-similar-weights_05.ttp", // to do just this 1 instance
 
-//            args = new String[]{"instances", "pla33810_n33809_bounded-strongly-corr_01.ttp", // to do all 10 instances (several files match the pattern)
-//            args = new String[]{"instances", "fnl4461_n44600_uncorr_10.ttp", // to do just this 1 instance
-//            args = new String[]{"instances", "fnl4461_n22300_uncorr-similar-weights_05.ttp", // to do just this 1 instance
-//            args = new String[]{"instances", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
+//            args = new String[]{"TTPdata", "pla33810_n33809_bounded-strongly-corr_01.ttp", // to do all 10 instances (several files match the pattern)
+//            args = new String[]{"TTPdata", "fnl4461_n44600_uncorr_10.ttp", // to do just this 1 instance
+//            args = new String[]{"TTPdata", "fnl4461_n22300_uncorr-similar-weights_05.ttp", // to do just this 1 instance
+//            args = new String[]{"TTPdata", "pla33810_n338090_uncorr_10.ttp", // to do just this 1 instance
 
-                            "7", "100000", "6000000", "2"};
+                            "7", "100000", "6000000"};
 //        ttp.Optimisation.Optimisation.doAllLinkernTours();
 //        runSomeTests();
         doBatch(args);
@@ -46,14 +47,14 @@ public class Driver {
     
     // note: doBatch can process several files sequentially
     public static void doBatch(String[] args) {
-//        String[] args = new String[]{"instances/","a2"};                      // first argument: folder with TTP and TSP files, second argument: partial filename of the instances to be solved   
+//        String[] args = new String[]{"TTPdata/","a2"};                      // first argument: folder with TTP and TSP files, second argument: partial filename of the instances to be solved   
 //        System.out.println("parameters: "+Arrays.toString(args));
         File[] files = ttp.Utils.Utils.getFileList(args);
         
         int algorithm = Integer.parseInt(args[2]);
         int durationWithoutImprovement = Integer.parseInt(args[3]);
         int maxRuntime = Integer.parseInt(args[4]);
-        int exercise = Integer.parseInt(args[5]);
+        //int exercise = Integer.parseInt(args[5]);
         
 //        System.out.println("files.length="+files.length+" algorithm="+algorithm+" durationWithoutImprovement="+durationWithoutImprovement);
 //        System.out.println("wend wendUsed fp ftraw ft ob computationTime");
@@ -76,12 +77,12 @@ public class Driver {
 
             if(algorithm <5) {
                 solution = Optimisation.hillClimber(instance, tour, algorithm,
-                        durationWithoutImprovement, maxRuntime, exercise);
+                		  durationWithoutImprovement, maxRuntime);
             }
 
             if(algorithm == 7) {
-                solution = Optimisation.greedyHillClimber(instance, tour, algorithm,
-                        durationWithoutImprovement, maxRuntime, exercise);
+            	solution = OptimisationofDynamicItems.hillClimber(instance, tour, algorithm,
+                        durationWithoutImprovement, maxRuntime);
             }
             
             // print to file
@@ -98,7 +99,7 @@ public class Driver {
     
     public static void runSomeTests() {
         //        TTPInstance instance = new TTPInstance(new File("instances/a280_n279_bounded-strongly-corr_1.ttp"));
-        TTPInstance instance = new TTPInstance(new File("instances/a280_n1395_bounded-strongly-corr_1.ttp"));
+        TTPInstance instance = new TTPInstance(new File("TTPdata/a280_n1395_bounded-strongly-corr_1.ttp"));
 //        TTPInstance instance = new TTPInstance(new File("instances/a280_n2790_bounded-strongly-corr_10.ttp"));
 //        TTPInstance instance = new TTPInstance(new File("instances/a280_n837_uncorr_9.ttp"));
 //        instance.printInstance(false);
@@ -147,3 +148,4 @@ public class Driver {
     
     
 }
+
