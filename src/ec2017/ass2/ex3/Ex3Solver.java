@@ -3,7 +3,6 @@ package ec2017.ass2.ex3;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Random;
 
 import ttp.TTPInstance;
@@ -11,7 +10,7 @@ import ttp.TTPSolution;
 
 public class Ex3Solver
 {
-	public static TTPSolution solve(int generations, int mode, int algor, int randomSeed, TTPInstance instance)
+	public static TTPSolution solve(int generations, int mode, int algor, int randomSeed, TTPInstance instance, Results results)
 	{
 		String tourName = instance.file.getName();
 		tourName = tourName.substring(0, tourName.indexOf("_"));
@@ -24,6 +23,11 @@ public class Ex3Solver
 		// Get PRNG. Since we have a fixed seed, all random choices are reproducible and consistent.
 		Random rng = new Random(randomSeed);
 		
+		Algorithm al =
+				algor == 1 ? new RichestAnt(instance) 
+				: algor == 2 ? new TrackingPlan(instance) 
+				: new GreedyHillClimber(instance);
+
 		for (int i = 0; i < generations; i++)
 		{
 			if (i % mutationRate == 0 && i != 0)
@@ -32,15 +36,32 @@ public class Ex3Solver
 				int rand2 = rng.nextInt(tour.length - 1) + 1;
 				int start = (Math.min(rand1, rand2));
 				int end = (Math.max(rand1, rand2));
-			
-				System.out.println(Arrays.toString(tour));
 				
-				if (mode == 1) tour = exchange(tour, start, end);
-				else if (mode == 2) tour = twoOpt(tour, start, end);
+				if (mode == 1) 
+				{
+					tour = exchange(tour, start, end);
+					if (TrackingPlan.class.isAssignableFrom(al.getClass()))
+					{
+						TrackingPlan tp = (TrackingPlan)al;
+						tp.exchange(start, end);
+					}
+				}
+				else if (mode == 2)
+				{
+					tour = twoOpt(tour, start, end);
+					if (TrackingPlan.class.isAssignableFrom(al.getClass()))
+					{
+						TrackingPlan tp = (TrackingPlan)al;
+						tp.twoOpt(start, end);
+					}
+				}
 			};
+			
+			al.iterate(tour);
+			if (i % 10 == 0) results.addData(instance.file.getName(), (long) al.getBest().ob);
+			
 		}
-		
-		return null;
+		return al.getBest();
 	}
 	
 	public static int[] getTour(String tourName)
@@ -74,6 +95,9 @@ public class Ex3Solver
 	
 	public static int[] twoOpt(int[] tour, int start, int end)
 	{
+		if(start == 0) start++;
+		if(end == tour.length-1) end--;
+		
 		while(start < end)
 		{
 			int temp = tour[start];
@@ -88,12 +112,17 @@ public class Ex3Solver
 	
 	public static int[] exchange(int[] tour, int start, int end)
 	{
+		if(start == 0) start++;
+		if(end == tour.length-1) end--;
+		
 		int temp = tour[start];
 		tour[start] = tour[end];
 		tour[end] = temp;
 		
 		return tour;
 	}
+	
+	
 	
 	
 }

@@ -12,7 +12,7 @@ public class Ex3Runner
 	{
 		int generations = args.length > 0 ? Integer.parseInt(args[0]) : 100000;
 		int mode = args.length > 1 ? Integer.parseInt(args[1]) : 2;
-		int algor = args.length > 2 ? Integer.parseInt(args[2]) : 1;
+		int algor = args.length > 2 ? Integer.parseInt(args[2]) : 3;
 		int randomSeed = args.length > 3 ? Integer.parseInt(args[3]) : 69;
 		String folder = args.length > 4 ? args[4] : "instances";
 		
@@ -22,10 +22,17 @@ public class Ex3Runner
 	
 	public static void runBenchmarks(int generations, int mode, int algor, int randomSeed, String folder)
 	{
+		Results results = new Results("ex3");
+		
 		for (File file : getFiles(folder, null))
 		{
 			TTPInstance instance = new TTPInstance(file);
-			TTPSolution solution = Ex3Solver.solve(generations, mode, algor, randomSeed, instance);
+			TTPSolution solution = Ex3Solver.solve(generations, mode, algor, randomSeed, instance, results);
+			
+			instance.evaluate(solution);
+			System.out.println(file.getName() + " : " + solution.ob);
+			results.writeToCSV();
+			results.writeToTable();
 		}
 		
 	}
