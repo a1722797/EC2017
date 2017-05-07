@@ -17,7 +17,8 @@ public class MutateRandom implements MutateOperator {
 		int index = (int)(Math.random() * _ttp.numberOfItems);
 		packingPlan[index] ^= 1;
 
-		return new TTPSolution(tspTour, packingPlan);
+		TTPSolution solution = new TTPSolution(tspTour, packingPlan);
+		return solution;
 	}
 
 	@Override

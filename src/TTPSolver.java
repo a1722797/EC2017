@@ -80,6 +80,8 @@ public class TTPSolver
 		// Run it
 		runTests(algorithm, population, runtime, runs);
 
+		runOptimisation(runtime);
+
         System.out.println("************* Done *************");
 
 	}
@@ -217,4 +219,49 @@ public class TTPSolver
 
 	}
 
+	private static void runOptimisation(int runtime) {
+		System.out.println("**************** Optimisation Start *************");
+
+		StringBuilder resultsLog = new StringBuilder();
+
+		int runtimemilli = runtime * 1000;
+		File inputFolder = new File("TTPdata");
+		for(File inFile : inputFolder.listFiles())
+		{
+			if (!inFile.getAbsolutePath().endsWith(".ttp")) {
+				continue;
+			}
+
+			System.out.println(inFile.getName());
+			resultsLog.append(inFile.getName());
+			resultsLog.append(System.lineSeparator());
+
+			TTPInstance instance = new TTPInstance(inFile);
+
+			int[] tour = Optimisation.linkernTour(instance);
+
+			TTPSolution solution = Optimisation.hillClimber(instance, tour, 1, 1000, runtimemilli);
+
+			System.out.println(solution.getObjective());
+			System.out.println("");
+			resultsLog.append(solution.getObjective());
+			resultsLog.append(System.lineSeparator());
+			resultsLog.append(System.lineSeparator());
+		}
+
+		try {
+			StringBuilder fileName = new StringBuilder();
+			fileName.append("Optimisation");
+			fileName.append(",time_");
+			fileName.append(runtime);
+
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("output/" + fileName.toString() + ".txt")));
+			bw.write(resultsLog.toString());
+			bw.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
